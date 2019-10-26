@@ -1,9 +1,9 @@
 <?php
 
-namespace Service;
+namespace App\Service;
 
 use DI\Container;
-use Entity\Product;
+use App\Entity\Product;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Service;
+namespace App\Service;
 
 
 class EmployeeService

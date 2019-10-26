@@ -1,6 +1,6 @@
 <?php
 
-use Service\MyRoute;
+use App\Service\MyRoute;
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . './../bootstrap.php';

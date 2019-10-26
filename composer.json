@@ -13,9 +13,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Service\\": "src/Service",
-            "Entity\\": "src/Entity",
-            "Repository\\": "src/Repository"
+            "App\\Service\\": "src/Service",
+            "App\\Entity\\": "src/Entity",
+            "App\\Repository\\": "src/Repository"
         }
     }
 }
