@@ -9,6 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Factory\AppFactory;
+use Slim\Routing\RouteCollectorProxy;
 use Throwable;
 
 class MyRoute
@@ -150,6 +151,19 @@ class MyRoute
             return $response
                 ->withHeader('Content-Type', 'application/json')
                 ->withStatus(201);
+        });
+
+        $this->app->group('/users/{id:[0-9]+}', function (RouteCollectorProxy $group) {
+            $group->map(['GET', 'DELETE', 'PATCH', 'PUT'], '', function ($request, $response, $args) {
+                // Find, delete, patch or replace user identified by $args['id']
+            })->setName('user');
+
+            $group->get('/reset-password', function ($request, $response, $args) {
+                // Route for /users/{id:[0-9]+}/reset-password
+                // Reset the password for user identified by $args['id']
+                $response->getBody()->write("Hi! User ID:" . $args['id']);
+                return $response;
+            })->setName('user-password-reset');
         });
     }
 
