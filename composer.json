@@ -10,7 +10,8 @@
         "doctrine/orm": "^2.6.2",
         "symfony/yaml": "^4.3",
         "php-di/php-di": "^6.0",
-        "monolog/monolog": "^1.25"
+        "monolog/monolog": "^1.25",
+        "swiftmailer/swiftmailer": "^6.2"
     },
     "autoload": {
         "psr-4": {

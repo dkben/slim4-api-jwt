@@ -10,6 +10,9 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
+use Swift_Mailer;
+use Swift_Message;
+use Swift_SmtpTransport;
 use Throwable;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -129,6 +132,38 @@ class MyRouteService
             $employeeService = $this->get('employeeService');
             $response->getBody()->write("Hello world! " . $employeeService->showEmployee('ben'));
             return $response;
+        });
+
+        $this->app->get('/mail', function (Request $request, Response $response, $args) {
+            // 以下使用 mailTrap.io 測試 ok
+            // Create the Transport
+            $transport = (new Swift_SmtpTransport('smtp.mailtrap.io', 2525))
+                ->setUsername('820e2020b3af7b')
+                ->setPassword('f359d1bb292759')
+            ;
+
+            // Create the Mailer using your created Transport
+            $mailer = new Swift_Mailer($transport);
+
+            try {
+                // Create a message
+                $message = (new Swift_Message('Wonderful Subject'))
+                    ->setFrom(['ben@jesda.com.tw' => 'ben'])
+                    ->setTo(['receiver@domain.org', 'other@domain.org' => 'A name'])
+                    ->setBody('Here is the message itself')
+                ;
+
+                // Send the message
+                $mailer->send($message);
+
+                $response->getBody()->write("Mail is Send! ");
+                return $response;
+            } catch (\Swift_RfcComplianceException $e) {
+                echo "<pre>";
+                print_r($e);
+                echo "</pre>";
+                die();
+            }
         });
 
         $this->app->get('/hello/{name}[/age/{age}]', function (Request $request, Response $response, $args) {
