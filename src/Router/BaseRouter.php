@@ -104,8 +104,8 @@ class BaseRouter
         // MonoLog
         $container->set('logger', function () {
             // create a log channel
-            $log = new Logger('name');
-            $log->pushHandler(new StreamHandler('../data/monolog.log', Logger::WARNING));
+            $log = new Logger($this->config['logger']['name']);
+            $log->pushHandler(new StreamHandler($this->config['logger']['path'], $this->config['logger']['level']));
             return $log;
         });
 
@@ -114,9 +114,7 @@ class BaseRouter
             // Create the Transport
             $transport = (new Swift_SmtpTransport($this->config['mail']['smtp'], $this->config['mail']['port']))
                 ->setUsername($this->config['mail']['user'])
-                ->setPassword($this->config['mail']['password'])
-            ;
-
+                ->setPassword($this->config['mail']['password']);
             // Create the Mailer using your created Transport
             $mailer = new Swift_Mailer($transport);
             return $mailer;
