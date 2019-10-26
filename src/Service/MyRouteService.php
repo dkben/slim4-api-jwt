@@ -13,12 +13,14 @@ use Slim\Routing\RouteCollectorProxy;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_SmtpTransport;
+use Symfony\Component\Yaml\Yaml;
 use Throwable;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 class MyRouteService
 {
+    private $config;
     private $app;
     private $beforeMiddleware;
     private $afterMiddleware;
@@ -27,6 +29,8 @@ class MyRouteService
 
     public function __construct($entityManager)
     {
+        $this->config = Yaml::parseFile('../config/system.yaml');
+
         // 設定 DI Container
         $container = $this->setContainer();
 
@@ -120,9 +124,9 @@ class MyRouteService
         // Swift_Mailer
         $container->set('mailer', function () {
             // Create the Transport
-            $transport = (new Swift_SmtpTransport('smtp.mailtrap.io', 2525))
-                ->setUsername('820e2020b3af7b')
-                ->setPassword('f359d1bb292759')
+            $transport = (new Swift_SmtpTransport($this->config['mail']['smtp'], $this->config['mail']['port']))
+                ->setUsername($this->config['mail']['user'])
+                ->setPassword($this->config['mail']['password'])
             ;
 
             // Create the Mailer using your created Transport

@@ -2,3 +2,4 @@
 /vendor/
 data/db.sqlite
 /data/
+/config/system.yaml
