@@ -102,16 +102,32 @@ class MyRouteService
     public function setContainer()
     {
         $container = new Container();
+
+        // Custom Service
         $container->set('employeeService', function () {
             // $settings = [...]; // 如果有需要，Service 的設定值
             return new EmployeeService();  // 再把設定傳入 Service 中
         });
 
+        // MonoLog
         $container->set('logger', function () {
             // create a log channel
             $log = new Logger('name');
             $log->pushHandler(new StreamHandler('../data/monolog.log', Logger::WARNING));
             return $log;
+        });
+
+        // Swift_Mailer
+        $container->set('mailer', function () {
+            // Create the Transport
+            $transport = (new Swift_SmtpTransport('smtp.mailtrap.io', 2525))
+                ->setUsername('820e2020b3af7b')
+                ->setPassword('f359d1bb292759')
+            ;
+
+            // Create the Mailer using your created Transport
+            $mailer = new Swift_Mailer($transport);
+            return $mailer;
         });
 
         return $container;
@@ -124,7 +140,7 @@ class MyRouteService
     public function setRoute($entityManager)
     {
         $this->app->get('/', function (Request $request, Response $response, $args) {
-            // log something
+            // get monolog
             $logger = $this->get('logger');
             $logger->warning('Foo');
             $logger->error('Bar');
@@ -135,15 +151,8 @@ class MyRouteService
         });
 
         $this->app->get('/mail', function (Request $request, Response $response, $args) {
-            // 以下使用 mailTrap.io 測試 ok
-            // Create the Transport
-            $transport = (new Swift_SmtpTransport('smtp.mailtrap.io', 2525))
-                ->setUsername('820e2020b3af7b')
-                ->setPassword('f359d1bb292759')
-            ;
-
-            // Create the Mailer using your created Transport
-            $mailer = new Swift_Mailer($transport);
+            // get swift mailer
+            $mailer = $this->get('mailer');
 
             try {
                 // Create a message
