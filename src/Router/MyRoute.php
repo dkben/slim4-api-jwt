@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Service;
+namespace App\Router;
 
+use App\Service\EmployeeService;
 use DI\Container;
 use App\Entity\Product;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -18,7 +19,7 @@ use Throwable;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-class MyRouteService
+class MyRoute
 {
     private $config;
     private $app;

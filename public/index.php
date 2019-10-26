@@ -1,9 +1,9 @@
 <?php
 
-use App\Service\MyRouteService;
+use App\Router\MyRoute;
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . './../bootstrap.php';
 
-$app = (new MyRouteService($entityManager))->get();
+$app = (new MyRoute($entityManager))->get();
 $app->run();
