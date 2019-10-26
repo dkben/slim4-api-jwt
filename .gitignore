@@ -1,5 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
 /vendor/
-data/db.sqlite
 /data/
 /config/system.yaml
