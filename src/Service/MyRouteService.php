@@ -11,6 +11,8 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
 use Throwable;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 class MyRouteService
 {
@@ -102,6 +104,13 @@ class MyRouteService
             return new EmployeeService();  // 再把設定傳入 Service 中
         });
 
+        $container->set('logger', function () {
+            // create a log channel
+            $log = new Logger('name');
+            $log->pushHandler(new StreamHandler('../data/monolog.log', Logger::WARNING));
+            return $log;
+        });
+
         return $container;
     }
 
@@ -112,8 +121,12 @@ class MyRouteService
     public function setRoute($entityManager)
     {
         $this->app->get('/', function (Request $request, Response $response, $args) {
-            $employeeService = $this->get('employeeService');
+            // log something
+            $logger = $this->get('logger');
+            $logger->warning('Foo');
+            $logger->error('Bar');
 
+            $employeeService = $this->get('employeeService');
             $response->getBody()->write("Hello world! " . $employeeService->showEmployee('ben'));
             return $response;
         });

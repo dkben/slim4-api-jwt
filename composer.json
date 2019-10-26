@@ -9,7 +9,8 @@
         "zendframework/zend-diactoros": "^2.1",
         "doctrine/orm": "^2.6.2",
         "symfony/yaml": "^4.3",
-        "php-di/php-di": "^6.0"
+        "php-di/php-di": "^6.0",
+        "monolog/monolog": "^1.25"
     },
     "autoload": {
         "psr-4": {
