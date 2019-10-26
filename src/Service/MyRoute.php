@@ -5,9 +5,11 @@ namespace App\Service;
 use DI\Container;
 use App\Entity\Product;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Factory\AppFactory;
+use Throwable;
 
 class MyRoute
 {
@@ -24,20 +26,21 @@ class MyRoute
 
         // 建立 app
         AppFactory::setContainer($container);
-        $app = AppFactory::create();
+        $this->app = AppFactory::create();
 
         // Middleware - Before
         $this->setBefore();
         $this->setAfter();
         // Middleware - After
-        $app->add($this->beforeMiddleware);
-        $app->add($this->afterMiddleware);
-        $app->add($this->afterMiddleware2);
+        $this->app->add($this->beforeMiddleware);
+        $this->app->add($this->afterMiddleware);
+        $this->app->add($this->afterMiddleware2);
 
         // Route 設定
-        $this->setRoute($app, $entityManager);
+        $this->setRoute($entityManager);
 
-        $this->app = $app;
+        // Error Handling
+        $this->setError();
     }
 
     /**
@@ -103,27 +106,25 @@ class MyRoute
 
     /**
      * Route 設定
-     * @param $app
      * @param $entityManager
-     * @return mixed
      */
-    public function setRoute($app, $entityManager)
+    public function setRoute($entityManager)
     {
-        $app->get('/', function (Request $request, Response $response, $args) {
+        $this->app->get('/', function (Request $request, Response $response, $args) {
             $employeeService = $this->get('employeeService');
 
             $response->getBody()->write("Hello world! " . $employeeService->showEmployee('ben'));
             return $response;
         });
 
-        $app->get('/hello/{name}[/age/{age}]', function (Request $request, Response $response, $args) {
+        $this->app->get('/hello/{name}[/age/{age}]', function (Request $request, Response $response, $args) {
             $name = $args['name'];
             $age = isset($args['age']) ? $args['age'] : '?';
             $response->getBody()->write("Hello, $name, $age");
             return $response;
         });
 
-        $app->get('/create', function (Request $request, Response $response, $args) use ($entityManager) {
+        $this->app->get('/create', function (Request $request, Response $response, $args) use ($entityManager) {
             $product = new Product();
             $product->setName('ben');
             $entityManager->persist($product);
@@ -133,7 +134,7 @@ class MyRoute
             return $response;
         });
 
-        $app->get('/read', function (Request $request, Response $response, $args) use ($entityManager) {
+        $this->app->get('/read', function (Request $request, Response $response, $args) use ($entityManager) {
             $productRepository = $entityManager->getRepository(Product::class);
             $products = $productRepository->getById(3);
             $product = $products[0];
@@ -141,7 +142,7 @@ class MyRoute
             return $response;
         })->add($this->afterMiddleware3);
 
-        $app->get('/json', function (Request $request, Response $response, $args) use ($entityManager) {
+        $this->app->get('/json', function (Request $request, Response $response, $args) use ($entityManager) {
             $data = array('name' => 'Rob', 'age' => 40);
             $payload = json_encode($data);
 
@@ -150,7 +151,41 @@ class MyRoute
                 ->withHeader('Content-Type', 'application/json')
                 ->withStatus(201);
         });
+    }
 
-        return $app;
+    public function setError()
+    {
+        $app = $this->app;
+
+        // Define Custom Error Handler
+        $customErrorHandler = function (
+            ServerRequestInterface $request,
+            Throwable $exception,
+            bool $displayErrorDetails,
+            bool $logErrors,
+            bool $logErrorDetails
+        ) use ($app) {
+            $payload = ['error' => $exception->getMessage()];
+
+            $response = $app->getResponseFactory()->createResponse();
+            $response->getBody()->write(
+                json_encode($payload, JSON_UNESCAPED_UNICODE)
+            );
+
+            return $response;
+        };
+
+        /*
+         *
+         * @param bool $displayErrorDetails -> Should be set to false in production
+         * @param bool $logErrors -> Parameter is passed to the default ErrorHandler
+         * @param bool $logErrorDetails -> Display error details in error log
+         * which can be replaced by a callable of your choice.
+         *
+         * Note: This middleware should be added last. It will not handle any exceptions/errors
+         * for middleware added after it.
+         */
+        $errorMiddleware = $this->app->addErrorMiddleware(true, true, true);
+        $errorMiddleware->setDefaultErrorHandler($customErrorHandler);
     }
 }
