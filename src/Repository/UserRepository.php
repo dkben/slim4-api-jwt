@@ -1,0 +1,19 @@
+<?php
+
+namespace Repository;
+
+use Doctrine\ORM\EntityRepository;
+
+class UserRepository extends EntityRepository
+{
+    public function getById($id)
+    {
+        $queryBuilder = $this->createQueryBuilder('a');
+
+        $queryBuilder
+            ->where('a.id = ?1')
+            ->setParameter(1, $id);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+}

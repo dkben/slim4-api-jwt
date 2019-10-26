@@ -1,14 +1,15 @@
 <?php
 
+
 namespace Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="Repository\ProductRepository")
- * @ORM\Table(name="products")
+ * @ORM\Entity(repositoryClass="Repository\UserRepository")
+ * @ORM\Table(name="user")
  */
-class Product
+class User
 {
     /**
      * @ORM\Id
@@ -37,5 +38,4 @@ class Product
     {
         return $this->name;
     }
-
 }
