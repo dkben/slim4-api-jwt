@@ -3,3 +3,9 @@ mail:
   port: 2525
   user: user
   password: password
+ logger:
+   name: app
+   path: ../data/app.log
+   level: Logger::WARNING
+   maxSize: 10000
+   maxFiles: 3

@@ -4,11 +4,9 @@ namespace App\Router;
 
 use App\Entity\Product;
 use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteCollectorProxy;
 use Swift_Message;
-use Throwable;
 
 class MyRouter extends BaseRouter
 {
@@ -22,7 +20,6 @@ class MyRouter extends BaseRouter
         // Error Handling
         $this->setError();
     }
-
 
     /**
      * Route 設定
@@ -115,39 +112,4 @@ class MyRouter extends BaseRouter
         });
     }
 
-    public function setError()
-    {
-        $app = $this->app;
-
-        // Define Custom Error Handler
-        $customErrorHandler = function (
-            ServerRequestInterface $request,
-            Throwable $exception,
-            bool $displayErrorDetails,
-            bool $logErrors,
-            bool $logErrorDetails
-        ) use ($app) {
-            $payload = ['error' => $exception->getMessage()];
-
-            $response = $app->getResponseFactory()->createResponse();
-            $response->getBody()->write(
-                json_encode($payload, JSON_UNESCAPED_UNICODE)
-            );
-
-            return $response;
-        };
-
-        /*
-         *
-         * @param bool $displayErrorDetails -> Should be set to false in production
-         * @param bool $logErrors -> Parameter is passed to the default ErrorHandler
-         * @param bool $logErrorDetails -> Display error details in error log
-         * which can be replaced by a callable of your choice.
-         *
-         * Note: This middleware should be added last. It will not handle any exceptions/errors
-         * for middleware added after it.
-         */
-        $errorMiddleware = $this->app->addErrorMiddleware(true, true, true);
-        $errorMiddleware->setDefaultErrorHandler($customErrorHandler);
-    }
 }
