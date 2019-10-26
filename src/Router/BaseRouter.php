@@ -12,6 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Factory\AppFactory;
+use Slim\Psr7\Response;
 use Swift_Mailer;
 use Swift_SmtpTransport;
 use Symfony\Component\Yaml\Yaml;
@@ -53,14 +54,15 @@ class BaseRouter
      */
     private function setBefore()
     {
-        $this->beforeMiddleware = function (Request $request, RequestHandler $handler) {
+        $self = $this;
+
+        $this->beforeMiddleware = function (Request $request, RequestHandler $handler) use ($self) {
             $response = $handler->handle($request);
             $existingContent = (string) $response->getBody();
 
-            $response = new \Slim\Psr7\Response();
+            $response = new Response();
             $response->getBody()->write('BEFORE' . $existingContent);
-
-            return $response;
+            return $self->response($response);
         };
     }
 
@@ -155,6 +157,7 @@ class BaseRouter
     protected function setError()
     {
         $app = $this->app;
+        $self = $this;
 
         // Define Custom Error Handler
         $customErrorHandler = function (
@@ -163,7 +166,7 @@ class BaseRouter
             bool $displayErrorDetails,
             bool $logErrors,
             bool $logErrorDetails
-        ) use ($app) {
+        ) use ($self, $app) {
             $payload = ['error' => $exception->getMessage()];
 
             $response = $app->getResponseFactory()->createResponse();
@@ -171,7 +174,7 @@ class BaseRouter
                 json_encode($payload, JSON_UNESCAPED_UNICODE)
             );
 
-            return $response;
+            return $self->response($response);
         };
 
         /*
@@ -186,5 +189,12 @@ class BaseRouter
          */
         $errorMiddleware = $this->app->addErrorMiddleware(true, true, true);
         $errorMiddleware->setDefaultErrorHandler($customErrorHandler);
+    }
+
+    public function response($response, $status = 201, $type = 'Content-Type', $header = 'application/json')
+    {
+        return $response
+            ->withHeader($type, $header)
+            ->withStatus($status);
     }
 }

@@ -27,7 +27,9 @@ class MyRouter extends BaseRouter
      */
     public function setRoute($entityManager)
     {
-        $this->app->get('/', function (Request $request, Response $response, $args) {
+        $self = $this;
+
+        $this->app->get('/', function (Request $request, Response $response, $args) use ($self) {
             // get monolog
             $logger = $this->get('logger');
             $logger->warning('Foo');
@@ -35,10 +37,10 @@ class MyRouter extends BaseRouter
 
             $employeeService = $this->get('employeeService');
             $response->getBody()->write("Hello world! " . $employeeService->showEmployee('ben'));
-            return $response;
+            return $self->response($response);
         });
 
-        $this->app->get('/mail', function (Request $request, Response $response, $args) {
+        $this->app->get('/mail', function (Request $request, Response $response, $args) use ($self) {
             // get swift mailer
             $mailer = $this->get('mailer');
 
@@ -54,7 +56,7 @@ class MyRouter extends BaseRouter
                 $mailer->send($message);
 
                 $response->getBody()->write("Mail is Send! ");
-                return $response;
+                return $self->response($response);
             } catch (\Swift_RfcComplianceException $e) {
                 echo "<pre>";
                 print_r($e);
@@ -63,51 +65,49 @@ class MyRouter extends BaseRouter
             }
         });
 
-        $this->app->get('/hello/{name}[/age/{age}]', function (Request $request, Response $response, $args) {
+        $this->app->get('/hello/{name}[/age/{age}]', function (Request $request, Response $response, $args) use ($self) {
             $name = $args['name'];
             $age = isset($args['age']) ? $args['age'] : '?';
             $response->getBody()->write("Hello, $name, $age");
-            return $response;
+            return $self->response($response);
         });
 
-        $this->app->get('/create', function (Request $request, Response $response, $args) use ($entityManager) {
+        $this->app->get('/create', function (Request $request, Response $response, $args) use ($self, $entityManager) {
             $product = new Product();
             $product->setName('ben');
             $entityManager->persist($product);
             $entityManager->flush();
 
             $response->getBody()->write("Create! ID: " . $product->getId());
-            return $response;
+            return $self->response($response);
         });
 
-        $this->app->get('/read', function (Request $request, Response $response, $args) use ($entityManager) {
+        $this->app->get('/read', function (Request $request, Response $response, $args) use ($self, $entityManager) {
             $productRepository = $entityManager->getRepository(Product::class);
             $products = $productRepository->getById(3);
             $product = $products[0];
             $response->getBody()->write("Read! ID: " . $product->getName());
-            return $response;
-        })->add($this->afterMiddleware3);
+            return $self->response($response);
+        });
 
-        $this->app->get('/json', function (Request $request, Response $response, $args) use ($entityManager) {
+        $this->app->get('/json', function (Request $request, Response $response, $args) use ($self, $entityManager) {
             $data = array('name' => 'Rob', 'age' => 40);
             $payload = json_encode($data);
 
             $response->getBody()->write($payload);
-            return $response
-                ->withHeader('Content-Type', 'application/json')
-                ->withStatus(201);
+            return $self->response($response);
         });
 
-        $this->app->group('/users/{id:[0-9]+}', function (RouteCollectorProxy $group) {
-            $group->map(['GET', 'DELETE', 'PATCH', 'PUT'], '', function ($request, $response, $args) {
+        $this->app->group('/users/{id:[0-9]+}', function (RouteCollectorProxy $group) use ($self) {
+            $group->map(['GET', 'DELETE', 'PATCH', 'PUT'], '', function ($request, $response, $args) use ($self) {
                 // Find, delete, patch or replace user identified by $args['id']
             })->setName('user');
 
-            $group->get('/reset-password', function ($request, $response, $args) {
+            $group->get('/reset-password', function ($request, $response, $args) use ($self) {
                 // Route for /users/{id:[0-9]+}/reset-password
                 // Reset the password for user identified by $args['id']
                 $response->getBody()->write("Hi! User ID:" . $args['id']);
-                return $response;
+                return $self->response($response);
             })->setName('user-password-reset');
         });
     }
