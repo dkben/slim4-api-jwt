@@ -12,7 +12,7 @@ use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
 use Throwable;
 
-class MyRoute
+class MyRouteService
 {
     private $app;
     private $beforeMiddleware;
