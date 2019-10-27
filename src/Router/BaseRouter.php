@@ -82,7 +82,7 @@ class BaseRouter
         // Redis
         $container->set('redis', function () {
             $redis = new Redis();
-            $redis->connect('127.0.0.1', 6379);
+            $redis->connect($this->config['redis']['host'], $this->config['redis']['port']);
             return $redis;
         });
 
