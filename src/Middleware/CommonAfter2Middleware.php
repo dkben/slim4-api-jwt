@@ -5,24 +5,24 @@ namespace App\Middleware;
 
 /**
  * Middleware - Common After
- * Class CommonAfterMiddleware
+ * Class CommonAfter2Middleware
  * @package App\Middleware
  */
-class CommonAfterMiddleware
+class CommonAfter2Middleware
 {
-    private $afterMiddleware;
+    private $after2Middleware;
 
     public function __construct()
     {
-        $this->afterMiddleware = function ($request, $handler) {
+        $this->after2Middleware = function ($request, $handler) {
             $response = $handler->handle($request);
-            $response->getBody()->write('->AFTER');
+            $response->getBody()->write('->AFTER2');
             return $response;
         };
     }
 
     public function run()
     {
-        return $this->afterMiddleware;
+        return $this->after2Middleware;
     }
 }

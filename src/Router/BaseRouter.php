@@ -4,28 +4,22 @@
 namespace App\Router;
 
 
+use App\Middleware\CommonAfter2Middleware;
+use App\Middleware\CommonAfterMiddleware;
+use App\Middleware\CommonBeforeMiddleware;
 use App\Service\EmployeeService;
 use DI\Container;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Factory\AppFactory;
-use Slim\Psr7\Response;
 use Swift_Mailer;
 use Swift_SmtpTransport;
 use Symfony\Component\Yaml\Yaml;
-use Throwable;
 
 class BaseRouter
 {
     protected $config;
     public $app;
-    protected $beforeMiddleware;
-    protected $afterMiddleware;
-    protected $afterMiddleware2;
-    protected $afterMiddleware3;
 
     public function __construct($entityManager)
     {
@@ -36,59 +30,18 @@ class BaseRouter
         AppFactory::setContainer($container);
         $this->app = AppFactory::create();
         // Middleware - Before
-        $this->setBefore();
-        $this->setAfter();
+        $beforeMiddleware = (new CommonBeforeMiddleware($this))->run();
+        $this->app->add($beforeMiddleware);
         // Middleware - After
-        $this->app->add($this->beforeMiddleware);
-        $this->app->add($this->afterMiddleware);
-        $this->app->add($this->afterMiddleware2);
+        $afterMiddleware = (new CommonAfterMiddleware())->run();
+        $this->app->add($afterMiddleware);
+        $after2Middleware = (new CommonAfter2Middleware())->run();
+        $this->app->add($after2Middleware);
     }
 
     public function get()
     {
         return $this->app;
-    }
-
-    /**
-     * Middleware - Before
-     */
-    private function setBefore()
-    {
-        $self = $this;
-
-        $this->beforeMiddleware = function (Request $request, RequestHandler $handler) use ($self) {
-            $response = $handler->handle($request);
-            $existingContent = (string) $response->getBody();
-
-            $response = new Response();
-            $response->getBody()->write('BEFORE' . $existingContent);
-            return $self->response($response);
-        };
-    }
-
-    /**
-     * Middleware - After
-     */
-    private function setAfter()
-    {
-        // 結束 route 本身工作後的 route
-        $this->afterMiddleware = function ($request, $handler) {
-            $response = $handler->handle($request);
-            $response->getBody()->write('AFTER');
-            return $response;
-        };
-
-        $this->afterMiddleware2 = function ($request, $handler) {
-            $response = $handler->handle($request);
-            $response->getBody()->write('AFTER2');
-            return $response;
-        };
-
-        $this->afterMiddleware3 = function ($request, $handler) {
-            $response = $handler->handle($request);
-            $response->getBody()->write('AFTER3');
-            return $response;
-        };
     }
 
     /**
@@ -158,6 +111,7 @@ class BaseRouter
     {
         return $response
             ->withHeader($type, $header)
-            ->withStatus($status);
+            ->withStatus($status)
+            ;
     }
 }
