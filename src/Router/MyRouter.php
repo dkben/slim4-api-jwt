@@ -112,6 +112,7 @@ class MyRouter extends BaseRouter
                 return $self->response($response);
             })->setName('user-password-reset');
         });
+        
     }
 
 }
