@@ -3,6 +3,7 @@
 namespace App\Router;
 
 use App\Entity\Product;
+use App\Middleware\CommonAfter3Middleware;
 use App\Middleware\CommonErrorMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -97,7 +98,7 @@ class MyRouter extends BaseRouter
 
             $response->getBody()->write($payload);
             return $self->response($response);
-        });
+        })->add((new CommonAfter3Middleware())->run());
 
         $this->app->group('/users/{id:[0-9]+}', function (RouteCollectorProxy $group) use ($self) {
             $group->map(['GET', 'DELETE', 'PATCH', 'PUT'], '', function ($request, $response, $args) use ($self) {
