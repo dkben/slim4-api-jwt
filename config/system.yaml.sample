@@ -1,14 +1,17 @@
+db:
+  driver: pdo_sqlite
+  path: ../data/db.sqlite
 mail:
   smtp: smtp
   port: 2525
   user: user
   password: password
- logger:
-   name: app
-   path: ../data/app.log
-   level: Logger::WARNING
-   maxSize: 10000
-   maxFiles: 3
+logger:
+  name: app
+  path: ../data/app.log
+  level: Logger::WARNING
+  maxSize: 10000
+  maxFiles: 3
 redis:
   host: 127.0.0.1
   port: 6379

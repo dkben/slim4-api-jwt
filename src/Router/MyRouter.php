@@ -2,14 +2,10 @@
 
 namespace App\Router;
 
-use App\Entity\Product;
-use App\Middleware\CommonAfter3Middleware;
 use App\Middleware\CommonErrorMiddleware;
 use App\Resource\ResourceFactory;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Routing\RouteCollectorProxy;
-use Swift_Message;
 
 class MyRouter extends BaseRouter
 {
