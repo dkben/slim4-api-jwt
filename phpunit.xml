@@ -3,7 +3,7 @@
         bootstrap="./bootstrap.php"
         colors="true">
     <testsuites>
-        <testsuite name="Cart Test Suite">
+        <testsuite name="App Test Suite">
             <directory phpVersion="7.1.30" phpVersionOperator=">=">./tests/</directory>
         </testsuite>
     </testsuites>
