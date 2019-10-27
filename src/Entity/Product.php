@@ -3,10 +3,16 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
+use Doctrine\ORM\Mapping\PrePersist;
+use Doctrine\ORM\Mapping\PreUpdate;
+use Exception;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
  * @ORM\Table(name="products")
+ * @HasLifecycleCallbacks
  */
 class Product
 {
@@ -16,6 +22,7 @@ class Product
      * @ORM\GeneratedValue
      */
     protected $id;
+
     /**
      * @ORM\Column(type="string")
      */
@@ -37,5 +44,17 @@ class Product
     {
         return $this->name;
     }
+
+    /**
+     * @PrePersist
+     * @PreUpdate
+     */
+    public function validate()
+    {
+//        if ($this->name == 'ben') {
+//            throw new Exception("is ben!");
+//        }
+    }
+
 
 }
