@@ -48,8 +48,8 @@ class BaseResource
 
         // database configuration parameters
         $conn = array(
-            'driver' => 'pdo_sqlite',
-            'path' => '../data/db.sqlite',
+            'driver' => $GLOBALS['systemConfig']['db']['driver'],
+            'path' => $GLOBALS['systemConfig']['db']['path'],
         );
 
         // obtaining the entity manager

@@ -15,7 +15,7 @@ use Redis;
 use Slim\Factory\AppFactory;
 use Swift_Mailer;
 use Swift_SmtpTransport;
-use Symfony\Component\Yaml\Yaml;
+
 
 class BaseRouter
 {
@@ -24,7 +24,8 @@ class BaseRouter
 
     public function __construct()
     {
-        $this->config = Yaml::parseFile('../config/system.yaml');
+        $this->config = $GLOBALS['systemConfig'];
+
         // 設定 DI Container
         $container = $this->setContainer();
         // 建立 app
