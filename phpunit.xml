@@ -7,4 +7,19 @@
             <directory phpVersion="7.1.30" phpVersionOperator=">=">./tests/</directory>
         </testsuite>
     </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./src/Service</directory>
+        </whitelist>
+    </filter>
+
+    <logging>
+        <log type="coverage-html"
+             target="./build/"
+             charset="UTF-8"
+             highlight="true"
+             lowUpperBound="50"
+             highLowerBound="80"/>
+    </logging>
 </phpunit>
