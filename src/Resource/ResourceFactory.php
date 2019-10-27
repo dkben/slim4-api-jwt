@@ -4,7 +4,7 @@
 namespace App\Resource;
 
 
-use Exception;
+use App\Exception\UriNotFound;
 
 class ResourceFactory
 {
@@ -22,7 +22,7 @@ class ResourceFactory
         }
 
         // 沒有符合的 className 時，這裡的 Exception 要自己處理
-        throw new Exception('URI not found.');
+        throw new UriNotFound();
     }
 
     static public function get($resourceType)
