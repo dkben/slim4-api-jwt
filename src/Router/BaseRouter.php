@@ -21,7 +21,7 @@ use Throwable;
 class BaseRouter
 {
     protected $config;
-    protected $app;
+    public $app;
     protected $beforeMiddleware;
     protected $afterMiddleware;
     protected $afterMiddleware2;
@@ -152,43 +152,6 @@ class BaseRouter
             }
             rename($logName, sprintf($pattern, 1));
         }
-    }
-
-    protected function setError()
-    {
-        $app = $this->app;
-        $self = $this;
-
-        // Define Custom Error Handler
-        $customErrorHandler = function (
-            ServerRequestInterface $request,
-            Throwable $exception,
-            bool $displayErrorDetails,
-            bool $logErrors,
-            bool $logErrorDetails
-        ) use ($self, $app) {
-            $payload = ['error' => $exception->getMessage()];
-
-            $response = $app->getResponseFactory()->createResponse();
-            $response->getBody()->write(
-                json_encode($payload, JSON_UNESCAPED_UNICODE)
-            );
-
-            return $self->response($response);
-        };
-
-        /*
-         *
-         * @param bool $displayErrorDetails -> Should be set to false in production
-         * @param bool $logErrors -> Parameter is passed to the default ErrorHandler
-         * @param bool $logErrorDetails -> Display error details in error log
-         * which can be replaced by a callable of your choice.
-         *
-         * Note: This middleware should be added last. It will not handle any exceptions/errors
-         * for middleware added after it.
-         */
-        $errorMiddleware = $this->app->addErrorMiddleware(true, true, true);
-        $errorMiddleware->setDefaultErrorHandler($customErrorHandler);
     }
 
     public function response($response, $status = 201, $type = 'Content-Type', $header = 'application/json')

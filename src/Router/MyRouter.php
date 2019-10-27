@@ -3,6 +3,7 @@
 namespace App\Router;
 
 use App\Entity\Product;
+use App\Middleware\CommonErrorMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteCollectorProxy;
@@ -18,7 +19,7 @@ class MyRouter extends BaseRouter
         $this->setRoute($entityManager);
 
         // Error Handling
-        $this->setError();
+        (new CommonErrorMiddleware($this))->run();
     }
 
     /**
