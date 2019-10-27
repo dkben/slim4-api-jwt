@@ -22,7 +22,7 @@ class BaseRouter
     protected $config;
     public $app;
 
-    public function __construct($entityManager)
+    public function __construct()
     {
         $this->config = Yaml::parseFile('../config/system.yaml');
         // 設定 DI Container

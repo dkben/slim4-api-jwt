@@ -5,6 +5,7 @@ namespace App\Router;
 use App\Entity\Product;
 use App\Middleware\CommonAfter3Middleware;
 use App\Middleware\CommonErrorMiddleware;
+use App\Resource\ResourceFactory;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteCollectorProxy;
@@ -12,12 +13,12 @@ use Swift_Message;
 
 class MyRouter extends BaseRouter
 {
-    public function __construct($entityManager)
+    public function __construct()
     {
-        parent::__construct($entityManager);
+        parent::__construct();
 
         // Route 設定
-        $this->setRoute($entityManager);
+        $this->setRoute();
 
         // Error Handling
         (new CommonErrorMiddleware($this))->run();
@@ -25,12 +26,24 @@ class MyRouter extends BaseRouter
 
     /**
      * Route 設定
-     * @param $entityManager
      */
-    public function setRoute($entityManager)
+    public function setRoute()
     {
         $self = $this;
 
+        $this->app->get('/', function (Request $request, Response $response, $args) use ($self) {
+            $response->getBody()->write("Hello world!");
+            return $self->response($response);
+        });
+
+        $this->app->get('/{resourceType}[/id/{id}]', function (Request $request, Response $response, $args) use ($self) {
+            $id = isset($args['id']) ? $args['id'] : null;
+            $resource = ResourceFactory::get($args['resourceType']);
+            $response->getBody()->write($resource->get($id));
+            return $self->response($response);
+        });
+
+        /*
         $this->app->get('/', function (Request $request, Response $response, $args) use ($self) {
             // get monolog
             $logger = $this->get('logger');
@@ -122,7 +135,6 @@ class MyRouter extends BaseRouter
                 return $self->response($response);
             })->setName('user-password-reset');
         });
-
+        */
     }
-
 }
