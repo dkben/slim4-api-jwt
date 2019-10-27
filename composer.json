@@ -11,7 +11,10 @@
         "symfony/yaml": "^4.3",
         "php-di/php-di": "^6.0",
         "monolog/monolog": "^1.25",
-        "swiftmailer/swiftmailer": "^6.2"
+        "swiftmailer/swiftmailer": "^6.2",
+        "doctrine/cache": "^1.8",
+        "predis/predis": "^1.1",
+        "ext-redis": "*"
     },
     "autoload": {
         "psr-4": {

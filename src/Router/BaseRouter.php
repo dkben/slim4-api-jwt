@@ -11,6 +11,7 @@ use App\Service\EmployeeService;
 use DI\Container;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Redis;
 use Slim\Factory\AppFactory;
 use Swift_Mailer;
 use Swift_SmtpTransport;
@@ -76,6 +77,13 @@ class BaseRouter
             // Create the Mailer using your created Transport
             $mailer = new Swift_Mailer($transport);
             return $mailer;
+        });
+
+        // Redis
+        $container->set('redis', function () {
+            $redis = new Redis();
+            $redis->connect('127.0.0.1', 6379);
+            return $redis;
         });
 
         return $container;

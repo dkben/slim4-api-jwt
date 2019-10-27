@@ -100,6 +100,16 @@ class MyRouter extends BaseRouter
             return $self->response($response);
         })->add((new CommonAfter3Middleware())->run());
 
+        $this->app->get('/redis', function (Request $request, Response $response, $args) use ($self) {
+            $now = time();
+            $redis = $this->get('redis');
+            $redis->set('slim4', $now);
+            $now = array('now' => $now);
+            $payload = json_encode($now);
+            $response->getBody()->write($payload);
+            return $self->response($response);
+        });
+
         $this->app->group('/users/{id:[0-9]+}', function (RouteCollectorProxy $group) use ($self) {
             $group->map(['GET', 'DELETE', 'PATCH', 'PUT'], '', function ($request, $response, $args) use ($self) {
                 // Find, delete, patch or replace user identified by $args['id']
@@ -112,7 +122,7 @@ class MyRouter extends BaseRouter
                 return $self->response($response);
             })->setName('user-password-reset');
         });
-        
+
     }
 
 }
