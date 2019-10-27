@@ -9,3 +9,6 @@ mail:
    level: Logger::WARNING
    maxSize: 10000
    maxFiles: 3
+redis:
+  host: 127.0.0.1
+  port: 6379
