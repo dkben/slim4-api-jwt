@@ -1,5 +1,6 @@
 <?php
 // bootstrap.php
+use Doctrine\Common\Cache\ApcuCache;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 //use Doctrine\ORM\EntityRepository;
@@ -12,6 +13,11 @@ $proxyDir = null;
 $cache = null;
 $useSimpleAnnotationReader = false;
 $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__ . "/src/Entity"), $isDevMode, $proxyDir, $cache, $useSimpleAnnotationReader);
+// Use Query Cache - ApcuCache
+$config->setQueryCacheImpl(new ApcuCache());
+// Use Result Cache - ApcuCache
+//$config->setResultCacheImpl(new ApcuCache());
+
 // or if you prefer yaml or XML
 //$config = Setup::createXMLMetadataConfiguration(array(__DIR__."/config/xml"), $isDevMode);
 //$config = Setup::createYAMLMetadataConfiguration(array(__DIR__."/config/yaml"), $isDevMode);

@@ -12,7 +12,8 @@ class UserRepository extends EntityRepository
 
         $queryBuilder
             ->where('a.id = ?1')
-            ->setParameter(1, $id);
+            ->setParameter(1, $id)
+        ;
 
         return $queryBuilder->getQuery()->getResult();
     }
