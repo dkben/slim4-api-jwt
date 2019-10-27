@@ -31,11 +31,19 @@ class MyRouter extends BaseRouter
     {
         $self = $this;
 
+        // 固定的 uri 用來處理系統排程，非對應到 entity 的狀況
         $this->app->get('/', function (Request $request, Response $response, $args) use ($self) {
             $response->getBody()->write("Hello world!");
             return $self->response($response);
         });
 
+        // 固定的 uri 用來處理系統排程，非對應到 entity 的狀況
+        $this->app->get('/test', function (Request $request, Response $response, $args) use ($self) {
+            $response->getBody()->write("Test!");
+            return $self->response($response);
+        });
+
+        // 非固定的 uri 會自動對應到 resource 並使用 entity 對應資料庫
         $this->app->get('/{resourceType}[/id/{id}]', function (Request $request, Response $response, $args) use ($self) {
             $id = isset($args['id']) ? $args['id'] : null;
             $resource = ResourceFactory::get($args['resourceType']);
