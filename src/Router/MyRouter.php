@@ -47,6 +47,37 @@ class MyRouter extends BaseRouter
             return $self->response($response);
         });
 
+        $this->app->post('/{resourceType}', function (Request $request, Response $response, $args) use ($self) {
+            $data = json_decode($request->getBody()->getContents());
+            $resource = ResourceFactory::get($args['resourceType']);
+            $response->getBody()->write($resource->post($data));
+            return $self->response($response);
+        });
+
+        $this->app->put('/{resourceType}/id/{id}', function (Request $request, Response $response, $args) use ($self) {
+            $id = isset($args['id']) ? $args['id'] : null;
+            $data = json_decode($request->getBody()->getContents());
+            $resource = ResourceFactory::get($args['resourceType']);
+            $response->getBody()->write($resource->put($id, $data));
+            return $self->response($response);
+        });
+
+        $this->app->patch('/{resourceType}/id/{id}', function (Request $request, Response $response, $args) use ($self) {
+            $id = isset($args['id']) ? $args['id'] : null;
+            $data = json_decode($request->getBody()->getContents());
+            $resource = ResourceFactory::get($args['resourceType']);
+            $response->getBody()->write($resource->patch($id, $data));
+            return $self->response($response);
+        });
+
+        $this->app->delete('/{resourceType}/id/{id}', function (Request $request, Response $response, $args) use ($self) {
+            $id = isset($args['id']) ? $args['id'] : null;
+            $data = json_decode($request->getBody()->getContents());
+            $resource = ResourceFactory::get($args['resourceType']);
+            $response->getBody()->write($resource->delete($id, $data));
+            return $self->response($response);
+        });
+
         /*
         $this->app->get('/', function (Request $request, Response $response, $args) use ($self) {
             // get monolog

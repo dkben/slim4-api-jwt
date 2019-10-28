@@ -14,6 +14,15 @@ class BaseResource
      */
     private $entityManager = null;
 
+    protected $app = null;
+
+    public function __construct()
+    {
+        if ($this->app === null) {
+            $this->app = $GLOBALS['app'];
+        }
+    }
+
     /**
      * @return \Doctrine\ORM\EntityManager
      */
