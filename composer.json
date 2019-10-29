@@ -16,7 +16,9 @@
         "predis/predis": "^1.1",
         "ext-redis": "*",
         "doctrine/annotations": "^1.8",
-        "ext-http": "*"
+        "ext-fileinfo": "*",
+        "ext-json": "*",
+        "ralouphie/mimey": "^2.1"
     },
     "autoload": {
         "psr-4": {

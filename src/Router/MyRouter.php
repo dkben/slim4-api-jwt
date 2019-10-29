@@ -2,6 +2,7 @@
 
 namespace App\Router;
 
+use App\Helper\UploadFileHelper;
 use App\Middleware\CommonErrorMiddleware;
 use App\Resource\ResourceFactory;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -36,6 +37,13 @@ class MyRouter extends BaseRouter
         // 固定的 uri 用來處理系統排程，非對應到 entity 的狀況
         $this->app->get('/test', function (Request $request, Response $response, $args) use ($self) {
             $response->getBody()->write("Test!");
+            return $self->response($response);
+        });
+
+        // 上傳檔案
+        $this->app->post('/uploadFile', function (Request $request, Response $response, $args) use ($self) {
+            $message = (new UploadFileHelper())->upload();
+            $response->getBody()->write("Upload " . $message . "!");
             return $self->response($response);
         });
 
@@ -77,6 +85,8 @@ class MyRouter extends BaseRouter
             $response->getBody()->write($resource->delete($id, $data));
             return $self->response($response);
         });
+
+        // TODO ? 這裡可以取所有 Resource 檔案名稱，去除 Base, Factory，如果 resourceType 沒有在裡面，跑原本的 error exception
 
         /*
         $this->app->get('/', function (Request $request, Response $response, $args) use ($self) {
