@@ -16,17 +16,31 @@ class ResourceFactory
         }, $resourceType);
 
         $className = 'App\Resource\\' . ucfirst($str) . 'Resource';
+        return $className;
+//        if (class_exists($className)) {
+//            return $className;
+//        } else {
+//            throw new UriNotFound('Uri Not Found!');
+//        }
+    }
 
+    static public function create($className)
+    {
         if (class_exists($className)) {
-            return $className;
+            return new $className();
         } else {
-            throw new UriNotFound('Uri Not Found!');
+            throw new UriNotFound('Uri Not Found!', 100);
         }
     }
 
     static public function get($resourceType)
     {
-        $className = self::getClassName($resourceType);
-        return new $className();
+        try {
+            $className = self::getClassName($resourceType);
+            return self::create($className);
+        } catch (UriNotFound $e) {
+            return $e->getMessage() . ' code: ' . $e->getCode();
+        }
     }
+
 }

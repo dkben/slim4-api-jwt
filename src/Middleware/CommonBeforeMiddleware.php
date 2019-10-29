@@ -25,7 +25,7 @@ class CommonBeforeMiddleware
 
             $response = new Response();
             $response->getBody()->write('BEFORE->' . $existingContent);
-            return $self->response($response);
+            return $response;
         };
     }
 

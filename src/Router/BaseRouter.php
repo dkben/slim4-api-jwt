@@ -116,11 +116,11 @@ class BaseRouter
         }
     }
 
-    public function response($response, $status = 201, $type = 'Content-Type', $header = 'application/json')
+    public function response($response, $status = 200, $type = 'Content-Type', $header = 'application/json')
     {
         return $response
             ->withHeader($type, $header)
-            ->withStatus($status)
+            ->withStatus(400)
             ;
     }
 }

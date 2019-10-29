@@ -19,7 +19,7 @@ class MyRouter extends BaseRouter
         $this->setRoute();
 
         // Error Handling，動態 URI 比對 Resource 時，永遠也不會使用到這個 ErrorMiddleware
-        (new CommonErrorMiddleware($this))->run();
+//        (new CommonErrorMiddleware($this))->run();
     }
 
     /**
@@ -53,8 +53,15 @@ class MyRouter extends BaseRouter
             $group->get('/{resourceType}[/id/{id}]', function (Request $request, Response $response, $args) use ($self) {
                 $id = isset($args['id']) ? $args['id'] : null;
                 $resource = ResourceFactory::get($args['resourceType']);
-                $response->getBody()->write($resource->get($id));
-                return $self->response($response);
+                if (is_string($resource)) {
+                    $data = $resource;
+                    $status = 400;
+                } else {
+                    $data = $resource->get($id);
+                    $status = 200;
+                }
+                $response->getBody()->write($data);
+                return $self->response($response, $status);
             });
 
             $group->post('/{resourceType}', function (Request $request, Response $response, $args) use ($self) {
