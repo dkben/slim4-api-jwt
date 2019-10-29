@@ -19,10 +19,9 @@ class ResourceFactory
 
         if (class_exists($className)) {
             return $className;
+        } else {
+            throw new UriNotFound('Uri Not Found!');
         }
-
-        // 沒有符合的 className 時，這裡的 Exception 要自己處理
-        throw new UriNotFound();
     }
 
     static public function get($resourceType)
