@@ -7,6 +7,7 @@ use App\Middleware\CommonErrorMiddleware;
 use App\Resource\ResourceFactory;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Routing\RouteCollectorProxy;
 
 class MyRouter extends BaseRouter
 {
@@ -39,7 +40,7 @@ class MyRouter extends BaseRouter
             $response->getBody()->write("Test!");
             return $self->response($response);
         });
-
+        
         // 上傳檔案
         $this->app->post('/uploadFile', function (Request $request, Response $response, $args) use ($self) {
             $message = (new UploadFileHelper())->upload();
@@ -48,45 +49,45 @@ class MyRouter extends BaseRouter
         });
 
         // 非固定的 uri 會自動對應到 resource 並使用 entity 對應資料庫
-        $this->app->get('/{resourceType}[/id/{id}]', function (Request $request, Response $response, $args) use ($self) {
-            $id = isset($args['id']) ? $args['id'] : null;
-            $resource = ResourceFactory::get($args['resourceType']);
-            $response->getBody()->write($resource->get($id));
-            return $self->response($response);
-        });
+        $this->app->group('', function (RouteCollectorProxy $group) use ($self) {
+            $group->get('/{resourceType}[/id/{id}]', function (Request $request, Response $response, $args) use ($self) {
+                $id = isset($args['id']) ? $args['id'] : null;
+                $resource = ResourceFactory::get($args['resourceType']);
+                $response->getBody()->write($resource->get($id));
+                return $self->response($response);
+            });
 
-        $this->app->post('/{resourceType}', function (Request $request, Response $response, $args) use ($self) {
-            $data = json_decode($request->getBody()->getContents());
-            $resource = ResourceFactory::get($args['resourceType']);
-            $response->getBody()->write($resource->post($data));
-            return $self->response($response);
-        });
+            $group->post('/{resourceType}', function (Request $request, Response $response, $args) use ($self) {
+                $data = json_decode($request->getBody()->getContents());
+                $resource = ResourceFactory::get($args['resourceType']);
+                $response->getBody()->write($resource->post($data));
+                return $self->response($response);
+            });
 
-        $this->app->put('/{resourceType}/id/{id}', function (Request $request, Response $response, $args) use ($self) {
-            $id = isset($args['id']) ? $args['id'] : null;
-            $data = json_decode($request->getBody()->getContents());
-            $resource = ResourceFactory::get($args['resourceType']);
-            $response->getBody()->write($resource->put($id, $data));
-            return $self->response($response);
-        });
+            $group->put('/{resourceType}/id/{id}', function (Request $request, Response $response, $args) use ($self) {
+                $id = isset($args['id']) ? $args['id'] : null;
+                $data = json_decode($request->getBody()->getContents());
+                $resource = ResourceFactory::get($args['resourceType']);
+                $response->getBody()->write($resource->put($id, $data));
+                return $self->response($response);
+            });
 
-        $this->app->patch('/{resourceType}/id/{id}', function (Request $request, Response $response, $args) use ($self) {
-            $id = isset($args['id']) ? $args['id'] : null;
-            $data = json_decode($request->getBody()->getContents());
-            $resource = ResourceFactory::get($args['resourceType']);
-            $response->getBody()->write($resource->patch($id, $data));
-            return $self->response($response);
-        });
+            $group->patch('/{resourceType}/id/{id}', function (Request $request, Response $response, $args) use ($self) {
+                $id = isset($args['id']) ? $args['id'] : null;
+                $data = json_decode($request->getBody()->getContents());
+                $resource = ResourceFactory::get($args['resourceType']);
+                $response->getBody()->write($resource->patch($id, $data));
+                return $self->response($response);
+            });
 
-        $this->app->delete('/{resourceType}/id/{id}', function (Request $request, Response $response, $args) use ($self) {
-            $id = isset($args['id']) ? $args['id'] : null;
-            $data = json_decode($request->getBody()->getContents());
-            $resource = ResourceFactory::get($args['resourceType']);
-            $response->getBody()->write($resource->delete($id, $data));
-            return $self->response($response);
+            $group->delete('/{resourceType}/id/{id}', function (Request $request, Response $response, $args) use ($self) {
+                $id = isset($args['id']) ? $args['id'] : null;
+                $data = json_decode($request->getBody()->getContents());
+                $resource = ResourceFactory::get($args['resourceType']);
+                $response->getBody()->write($resource->delete($id, $data));
+                return $self->response($response);
+            });
         });
-
-        // TODO ? 這裡可以取所有 Resource 檔案名稱，去除 Base, Factory，如果 resourceType 沒有在裡面，跑原本的 error exception
 
         /*
         $this->app->get('/', function (Request $request, Response $response, $args) use ($self) {
