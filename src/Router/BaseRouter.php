@@ -32,8 +32,8 @@ class BaseRouter
         AppFactory::setContainer($container);
         $this->app = AppFactory::create();
         // Middleware - Before
-        $beforeMiddleware = (new CommonBeforeMiddleware($this))->run();
-        $this->app->add($beforeMiddleware);
+//        $beforeMiddleware = (new CommonBeforeMiddleware($this))->run();
+//        $this->app->add($beforeMiddleware);
         // Middleware - After
         $afterMiddleware = (new CommonAfterMiddleware())->run();
         $this->app->add($afterMiddleware);
@@ -120,7 +120,7 @@ class BaseRouter
     {
         return $response
             ->withHeader($type, $header)
-            ->withStatus(400)
+            ->withStatus($status)
             ;
     }
 }
