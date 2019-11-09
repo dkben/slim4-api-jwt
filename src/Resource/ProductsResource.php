@@ -5,6 +5,7 @@ namespace App\Resource;
 
 
 use App\Entity\Product;
+use App\Helper\RedisHelper;
 use App\Helper\SaveLogHelper;
 
 class ProductsResource extends BaseResource
@@ -16,7 +17,10 @@ class ProductsResource extends BaseResource
      */
     public function get($id)
     {
+        // 在這裡使用 Monolog 的方法
         SaveLogHelper::save('111', 'aaa');
+        // 在這裡使用 Redis 的方法
+//        RedisHelper::save('hi2');
 
         if ($id === null) {
             $products = $this->getEntityManager()->getRepository('App\Entity\Product')->findAll();

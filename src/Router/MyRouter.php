@@ -82,6 +82,10 @@ class MyRouter extends BaseRouter
         // 非固定的 uri 會自動對應到 resource 並使用 entity 對應資料庫
         $this->app->group('', function (RouteCollectorProxy $group) use ($self) {
             $group->get('/{resourceType}[/id/{id}]', function (Request $request, Response $response, $args) use ($self) {
+                // 在這裡使用 Redis 的方法
+//                $redis = $this->get('redis');
+//                $redis->set('slim4', time());
+
                 $id = isset($args['id']) ? $args['id'] : null;
                 $resource = ResourceFactory::get($args['resourceType']);
                 if (is_string($resource)) {
