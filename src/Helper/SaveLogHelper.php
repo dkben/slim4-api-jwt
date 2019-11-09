@@ -9,7 +9,7 @@ use Monolog\Logger;
 
 class SaveLogHelper
 {
-    static public function save($warning, $error)
+    static public function save($warning = null, $error = null)
     {
         $config = $GLOBALS['systemConfig']['logger'];
         self::checkLogSize($config);
@@ -18,8 +18,13 @@ class SaveLogHelper
         $log = new Logger($config['name']);
         $log->pushHandler(new StreamHandler($config['path'], $config['level']));
 
-        $log->warning($warning);
-        $log->error($error);
+        if (!is_null($warning)) {
+            $log->warning($warning);
+        }
+
+        if (!is_null($error)) {
+            $log->error($error);
+        }
     }
 
     /**

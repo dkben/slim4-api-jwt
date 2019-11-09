@@ -3,6 +3,7 @@
 namespace App\Router;
 
 use App\Exception\ExceptionResponse;
+use App\Exception\FileNotExistsException;
 use App\Exception\TestException;
 use App\Helper\UploadImageHelper;
 use App\Middleware\CommonErrorMiddleware;
@@ -49,6 +50,26 @@ class MyRouter extends BaseRouter
 
             $response->getBody()->write("Test!");
             return $self->response($response, 200);
+        });
+
+        $this->app->get('/download', function (Request $request, Response $response, $args) use ($self) {
+            // TODO 一些權限檢查...
+
+            $path = '../private/upload/images/2019/11/09/o/';
+            $fileName = '6f294fac30f0f2ab2.jpg';
+
+            try {
+                if (file_exists($path . $fileName)) {
+                    header('Content-Disposition: attachment; filename="' . $fileName . '"');
+                    echo file_get_contents($path . $fileName);
+                } else {
+                    throw new FileNotExistsException($fileName . ' file is not exists!');
+                }
+            } catch (FileNotExistsException $e) {
+                ExceptionResponse::response($e->getMessage(), $e->getCode());
+            }
+
+            return $self->response($response, $status = 200, $type = 'Content-Type', $header = 'application/octet-stream');
         });
         
         // 上傳檔案
