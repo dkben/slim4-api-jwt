@@ -17,12 +17,13 @@ class UploadFileHelper
 
     public function upload()
     {
-        $path = $GLOBALS['systemConfig']['upload']['public'];
+        $path = $GLOBALS['systemConfig']['upload']['public'] . date('Ymd') . '/';
+
         if (!file_exists($path)) {
             mkdir($path, 0755, true);
         }
 
-        $basename = date('Ymd') . '-' . bin2hex(random_bytes(8));
+        $basename = bin2hex(random_bytes(8));
         $tmpName = $path . $basename;
         file_put_contents($tmpName, file_get_contents('php://input'));
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
