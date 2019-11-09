@@ -25,7 +25,7 @@ $config->setQueryCacheImpl(new ApcuCache());
 // database configuration parameters
 $conn = array(
     'driver' => 'pdo_sqlite',
-    'path' => __DIR__ . '/data/db.sqlite',
+    'path' => __DIR__ . '/data/sqlite/db.sqlite',
 );
 
 // obtaining the entity manager
