@@ -1,5 +1,7 @@
 <?php
 
+ini_set('display_errors', 0);
+
 use App\Router\MyRouter;
 use Symfony\Component\Yaml\Yaml;
 

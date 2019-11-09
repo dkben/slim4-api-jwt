@@ -5,6 +5,7 @@ namespace App\Resource;
 
 
 use App\Entity\Product;
+use App\Helper\SaveLogHelper;
 
 class ProductsResource extends BaseResource
 {
@@ -15,6 +16,8 @@ class ProductsResource extends BaseResource
      */
     public function get($id)
     {
+        SaveLogHelper::save('111', 'aaa');
+
         if ($id === null) {
             $products = $this->getEntityManager()->getRepository('App\Entity\Product')->findAll();
             $products = array_map(function($user) {

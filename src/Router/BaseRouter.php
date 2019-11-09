@@ -32,8 +32,8 @@ class BaseRouter
         AppFactory::setContainer($container);
         $this->app = AppFactory::create();
         // Middleware - Before
-//        $beforeMiddleware = (new CommonBeforeMiddleware($this))->run();
-//        $this->app->add($beforeMiddleware);
+        $beforeMiddleware = (new CommonBeforeMiddleware())->run();
+        $this->app->add($beforeMiddleware);
         // Middleware - After
         $afterMiddleware = (new CommonAfterMiddleware())->run();
         $this->app->add($afterMiddleware);
@@ -87,33 +87,15 @@ class BaseRouter
             return $redis;
         });
 
+//        $container->set('errorHandler', function ($container) {
+//            return function ($request, $response, $exception) use ($container) {
+//                return $response->withStatus(500)
+//                    ->withHeader('Content-Type', 'text/html')
+//                    ->write('Something went wrong!');
+//            };
+//        });
+
         return $container;
-    }
-
-    /**
-     * 限制 log 的檔案數量和大小
-     */
-    private function checkLogSize()
-    {
-        // rotate log file on size
-        $logName = $this->config['logger']['path'];
-        if (file_exists($logName) && filesize($logName) > $this->config['logger']['maxSize']) {
-            $path_parts = pathinfo($logName);
-            $pattern = $path_parts['dirname']. '/'. $path_parts['filename']. "-%d.". $path_parts['extension'];
-
-            // delete last log
-            $fn = sprintf($pattern, $this->config['logger']['maxFiles']);
-            if (file_exists($fn))
-                unlink($fn);
-
-            // shift file names (add '-%index' before the extension)
-            for ($i = $this->config['logger']['maxFiles']-1; $i > 0; $i--) {
-                $fn = sprintf($pattern, $i);
-                if(file_exists($fn))
-                    rename($fn, sprintf($pattern, $i+1));
-            }
-            rename($logName, sprintf($pattern, 1));
-        }
     }
 
     public function response($response, $status = 200, $type = 'Content-Type', $header = 'application/json')
