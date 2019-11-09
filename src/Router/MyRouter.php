@@ -2,6 +2,8 @@
 
 namespace App\Router;
 
+use App\Exception\ExceptionResponse;
+use App\Exception\TestException;
 use App\Helper\UploadImageHelper;
 use App\Middleware\CommonErrorMiddleware;
 use App\Resource\ResourceFactory;
@@ -37,8 +39,16 @@ class MyRouter extends BaseRouter
 
         // 固定的 uri 用來處理系統排程，非對應到 entity 的狀況
         $this->app->get('/test', function (Request $request, Response $response, $args) use ($self) {
+            try {
+                if (false) {
+                    throw new TestException('Hi, Test Exception');
+                }
+            } catch (TestException $e) {
+                ExceptionResponse::response($e->getMessage(), $e->getCode());
+            }
+
             $response->getBody()->write("Test!");
-            return $self->response($response);
+            return $self->response($response, 200);
         });
         
         // 上傳檔案
