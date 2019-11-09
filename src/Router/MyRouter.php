@@ -53,7 +53,7 @@ class MyRouter extends BaseRouter
         
         // 上傳檔案
         $this->app->post('/uploadFile', function (Request $request, Response $response, $args) use ($self) {
-            $message = (new UploadImageHelper())->upload();
+            $message = (new UploadImageHelper('private'))->upload();
             $response->getBody()->write("Upload " . $message . "!");
             return $self->response($response);
         });
