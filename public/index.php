@@ -15,5 +15,15 @@ require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . './../bootstrap.php';
 
 $systemConfig = Yaml::parseFile('../config/system.yaml');
+
+// 自訂的 session 位置
+if (!file_exists(__DIR__ . '/../data/session/')) {
+    mkdir(__DIR__ . '/../data/session/', 0755 ,true);
+}
+session_save_path(__DIR__ . '/../data/session/');
+
+// Start the session
+session_start();
+
 $app = (new MyRouter())->get();
 $app->run();
