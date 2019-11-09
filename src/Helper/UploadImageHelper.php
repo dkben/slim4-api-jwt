@@ -21,7 +21,7 @@ class UploadImageHelper
     {
         $this->accept = $GLOBALS['systemConfig']['upload']['acceptImage'];
         $this->imageSize = $GLOBALS['systemConfig']['upload']['imageSize'];
-        $basePath = $GLOBALS['systemConfig']['upload']['public'] . date('Ymd') . '/';
+        $basePath = $GLOBALS['systemConfig']['upload']['public'] . date('Y') . '/' . date('m') . '/' . date('d') . '/';
         $this->pathOrigin = $basePath . '/o/';
         $this->pathBig = $basePath . '/b/';
         $this->pathMiddle = $basePath . '/m/';
