@@ -2,7 +2,7 @@
 
 namespace App\Router;
 
-use App\Helper\UploadFileHelper;
+use App\Helper\UploadImageHelper;
 use App\Middleware\CommonErrorMiddleware;
 use App\Resource\ResourceFactory;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -43,7 +43,7 @@ class MyRouter extends BaseRouter
         
         // 上傳檔案
         $this->app->post('/uploadFile', function (Request $request, Response $response, $args) use ($self) {
-            $message = (new UploadFileHelper())->upload();
+            $message = (new UploadImageHelper())->upload();
             $response->getBody()->write("Upload " . $message . "!");
             return $self->response($response);
         });

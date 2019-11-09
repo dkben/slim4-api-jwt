@@ -18,7 +18,8 @@
         "doctrine/annotations": "^1.8",
         "ext-fileinfo": "*",
         "ext-json": "*",
-        "ralouphie/mimey": "^2.1"
+        "ralouphie/mimey": "^2.1",
+        "gregwar/image": "^2.0"
     },
     "autoload": {
         "psr-4": {
