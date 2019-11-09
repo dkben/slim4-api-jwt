@@ -4,6 +4,7 @@
 namespace App\Resource;
 
 
+use App\Exception\ExceptionResponse;
 use App\Exception\UriNotFound;
 
 class ResourceFactory
@@ -17,11 +18,6 @@ class ResourceFactory
 
         $className = 'App\Resource\\' . ucfirst($str) . 'Resource';
         return $className;
-//        if (class_exists($className)) {
-//            return $className;
-//        } else {
-//            throw new UriNotFound('Uri Not Found!');
-//        }
     }
 
     static public function create($className)
@@ -39,7 +35,8 @@ class ResourceFactory
             $className = self::getClassName($resourceType);
             return self::create($className);
         } catch (UriNotFound $e) {
-            return $e->getMessage() . ' code: ' . $e->getCode();
+            ExceptionResponse::response($e->getMessage(), $e->getCode());
+            return '';
         }
     }
 
