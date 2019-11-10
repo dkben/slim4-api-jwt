@@ -17,12 +17,22 @@ class RedisHelper
         self::$redis->connect($config['host'], $config['port']);
     }
 
-    static public function save($message)
+    static public function checkSelf()
     {
         if (is_null(self::$redis)) {
             self::create();
         }
+    }
 
-        self::$redis->set('slim4', $message);
+    static public function save($key, $message)
+    {
+        self::checkSelf();
+        self::$redis->set($key, $message);
+    }
+
+    static public function get($key)
+    {
+        self::checkSelf();
+        return self::$redis->get($key);
     }
 }

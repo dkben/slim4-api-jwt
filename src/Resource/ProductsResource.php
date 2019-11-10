@@ -20,7 +20,8 @@ class ProductsResource extends BaseResource
         // 在這裡使用 Monolog 的方法
         SaveLogHelper::save('111', 'aaa');
         // 在這裡使用 Redis 的方法
-//        RedisHelper::save('hi2');
+//        RedisHelper::save('slim4', 'hi4');
+//        echo RedisHelper::get('slim4'); die;
 
         if ($id === null) {
             $products = $this->getEntityManager()->getRepository('App\Entity\Product')->findAll();
