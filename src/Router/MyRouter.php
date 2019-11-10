@@ -5,6 +5,7 @@ namespace App\Router;
 use App\Action\CaptchaAction;
 use App\Action\DownloadImageAction;
 use App\Action\HomeAction;
+use App\Action\ResourceAction;
 use App\Action\TestAction;
 use App\Action\UploadImageAction;
 use App\Middleware\CommonErrorMiddleware;
@@ -56,54 +57,11 @@ class MyRouter extends BaseRouter
 
         // 非固定的 uri 會自動對應到 resource 並使用 entity 對應資料庫
         $this->app->group('', function (RouteCollectorProxy $group) use ($self) {
-            $group->get('/{resourceType}[/id/{id}]', function (Request $request, Response $response, $args) use ($self) {
-                // 在這裡使用 Redis 的方法
-//                $redis = $this->get('redis');
-//                $redis->set('slim4', time());
-
-                $id = isset($args['id']) ? $args['id'] : null;
-                $resource = ResourceFactory::get($args['resourceType']);
-                if (is_string($resource)) {
-                    $data = $resource;
-                    $status = 400;
-                } else {
-                    $data = $resource->get($id);
-                    $status = 200;
-                }
-                $response->getBody()->write($data);
-                return $self->response($response, $status);
-            });
-
-            $group->post('/{resourceType}', function (Request $request, Response $response, $args) use ($self) {
-                $data = json_decode($request->getBody()->getContents());
-                $resource = ResourceFactory::get($args['resourceType']);
-                $response->getBody()->write($resource->post($data));
-                return $self->response($response);
-            });
-
-            $group->put('/{resourceType}/id/{id}', function (Request $request, Response $response, $args) use ($self) {
-                $id = isset($args['id']) ? $args['id'] : null;
-                $data = json_decode($request->getBody()->getContents());
-                $resource = ResourceFactory::get($args['resourceType']);
-                $response->getBody()->write($resource->put($id, $data));
-                return $self->response($response);
-            });
-
-            $group->patch('/{resourceType}/id/{id}', function (Request $request, Response $response, $args) use ($self) {
-                $id = isset($args['id']) ? $args['id'] : null;
-                $data = json_decode($request->getBody()->getContents());
-                $resource = ResourceFactory::get($args['resourceType']);
-                $response->getBody()->write($resource->patch($id, $data));
-                return $self->response($response);
-            });
-
-            $group->delete('/{resourceType}/id/{id}', function (Request $request, Response $response, $args) use ($self) {
-                $id = isset($args['id']) ? $args['id'] : null;
-                $data = json_decode($request->getBody()->getContents());
-                $resource = ResourceFactory::get($args['resourceType']);
-                $response->getBody()->write($resource->delete($id, $data));
-                return $self->response($response);
-            });
+            $group->get('/{resourceType}[/id/{id}]', ResourceAction::class . ':get');
+            $group->post('/{resourceType}', ResourceAction::class . ':post');
+            $group->put('/{resourceType}/id/{id}', ResourceAction::class . ':put');
+            $group->patch('/{resourceType}/id/{id}', ResourceAction::class . ':patch');
+            $group->delete('/{resourceType}/id/{id}', ResourceAction::class . ':delete');
         });
 
         /*
