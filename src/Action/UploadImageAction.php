@@ -10,6 +10,8 @@ use Psr\Container\ContainerInterface;
 
 class UploadImageAction
 {
+    protected $container;
+
     public function __construct(ContainerInterface $container) {
         $this->container = $container;
     }

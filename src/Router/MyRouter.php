@@ -3,16 +3,12 @@
 namespace App\Router;
 
 use App\Action\CaptchaAction;
+use App\Action\DownloadImageAction;
 use App\Action\HomeAction;
 use App\Action\TestAction;
 use App\Action\UploadImageAction;
-use App\Exception\ExceptionResponse;
-use App\Exception\FileNotExistsException;
-use App\Exception\TestException;
-use App\Helper\UploadImageHelper;
 use App\Middleware\CommonErrorMiddleware;
 use App\Resource\ResourceFactory;
-use Gregwar\Captcha\CaptchaBuilder;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteCollectorProxy;
@@ -43,7 +39,7 @@ class MyRouter extends BaseRouter
             return $self->response($response);
         });
 
-        // 單一固定的 URI 可以寫成 Action，直接執行該 Action
+        // 單一固定的 uri 可以寫成 Action，直接執行該 Action
         $this->app->get('/home', HomeAction::class);
 
         // 固定的 uri 用來處理系統排程，非對應到 entity 的狀況
@@ -52,25 +48,8 @@ class MyRouter extends BaseRouter
         // 圖片驗證碼
         $this->app->get('/captcha', CaptchaAction::class);
 
-        $this->app->get('/download', function (Request $request, Response $response, $args) use ($self) {
-            // TODO 一些權限檢查...
-
-            $path = '../private/upload/images/2019/11/09/o/';
-            $fileName = '6f294fac30f0f2ab2.jpg';
-
-            try {
-                if (file_exists($path . $fileName)) {
-                    header('Content-Disposition: attachment; filename="' . $fileName . '"');
-                    echo file_get_contents($path . $fileName);
-                } else {
-                    throw new FileNotExistsException($fileName . ' file is not exists!');
-                }
-            } catch (FileNotExistsException $e) {
-                ExceptionResponse::response($e->getMessage(), $e->getCode());
-            }
-
-            return $self->response($response, $status = 200, $type = 'Content-Type', $header = 'application/octet-stream');
-        });
+        // 使用 header 方式下載 private 圖片
+        $this->app->get('/download-image', DownloadImageAction::class);
         
         // 上傳檔案
         $this->app->post('/upload-image', UploadImageAction::class);

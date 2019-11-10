@@ -12,6 +12,8 @@ use Psr\Container\ContainerInterface;
 
 class TestAction
 {
+    protected $container;
+
     public function __construct(ContainerInterface $container) {
         $this->container = $container;
     }

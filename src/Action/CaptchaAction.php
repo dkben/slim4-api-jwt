@@ -10,6 +10,8 @@ use Psr\Container\ContainerInterface;
 
 class CaptchaAction
 {
+    protected $container;
+
     public function __construct(ContainerInterface $container) {
         $this->container = $container;
     }
