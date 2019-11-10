@@ -2,6 +2,7 @@
 
 namespace App\Router;
 
+use App\Action\HomeAction;
 use App\Exception\ExceptionResponse;
 use App\Exception\FileNotExistsException;
 use App\Exception\TestException;
@@ -38,6 +39,9 @@ class MyRouter extends BaseRouter
             $response->getBody()->write("Hello world!");
             return $self->response($response);
         });
+
+        // 單一固定的 URI 可以寫成 Action，直接執行該 Action
+        $this->app->get('/home', HomeAction::class);
 
         // 固定的 uri 用來處理系統排程，非對應到 entity 的狀況
         $this->app->get('/test', function (Request $request, Response $response, $args) use ($self) {

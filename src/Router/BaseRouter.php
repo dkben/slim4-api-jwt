@@ -105,4 +105,12 @@ class BaseRouter
             ->withStatus($status)
             ;
     }
+
+    static public function staticResponse($response, $status = 200, $type = 'Content-Type', $header = 'application/json')
+    {
+        return $response
+            ->withHeader($type, $header)
+            ->withStatus($status)
+            ;
+    }
 }
