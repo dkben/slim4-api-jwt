@@ -4,6 +4,8 @@
 namespace App\Helper;
 
 
+use App\Exception\ExceptionResponse;
+use App\Exception\FileUploadNotAllowException;
 use Gregwar\Image\Image;
 use Mimey\MimeTypes;
 
@@ -55,26 +57,32 @@ class UploadImageHelper
         $mimes = new MimeTypes;
         $extension = $mimes->getExtension($mimeType);
         $newName = sprintf('%s.%0.8s', $basename, $extension);
+        $message = '';
 
-        if (in_array($extension, $this->accept)) {
-            rename($tmpName, $this->pathOrigin . $newName);
-            // 縮圖
-            Image::open($this->pathOrigin . $newName)
-                ->cropResize($this->imageSize['big'][0], $this->imageSize['big'][1])
-                ->save($this->pathBig . $newName);
+        try {
+            if (in_array($extension, $this->accept)) {
+                rename($tmpName, $this->pathOrigin . $newName);
+                // 縮圖
+                Image::open($this->pathOrigin . $newName)
+                    ->cropResize($this->imageSize['big'][0], $this->imageSize['big'][1])
+                    ->save($this->pathBig . $newName);
 
-            Image::open($this->pathOrigin . $newName)
-                ->cropResize($this->imageSize['middle'][0], $this->imageSize['middle'][1])
-                ->save($this->pathMiddle . $newName);
+                Image::open($this->pathOrigin . $newName)
+                    ->cropResize($this->imageSize['middle'][0], $this->imageSize['middle'][1])
+                    ->save($this->pathMiddle . $newName);
 
-            Image::open($this->pathOrigin . $newName)
-                ->cropResize($this->imageSize['small'][0], $this->imageSize['small'][1])
-                ->save($this->pathSmall . $newName);
+                Image::open($this->pathOrigin . $newName)
+                    ->cropResize($this->imageSize['small'][0], $this->imageSize['small'][1])
+                    ->save($this->pathSmall . $newName);
 
-            $message = 'success';
-        } else {
-            unlink($tmpName);
-            $message = 'failed';
+                $message = 'success';
+            } else {
+                unlink($tmpName);
+                $message = 'This File upload is not allowed!';
+                throw new FileUploadNotAllowException($message, 409);
+            }
+        } catch (FileUploadNotAllowException $e) {
+            ExceptionResponse::response($e->getMessage(), $e->getCode());
         }
 
         return $message;
