@@ -19,9 +19,10 @@ class UploadImageHelper
 
     public function __construct($location = 'public')
     {
-        $this->accept = $GLOBALS['systemConfig']['upload']['acceptImage'];
-        $this->imageSize = $GLOBALS['systemConfig']['upload']['imageSize'];
-        $basePath = $GLOBALS['systemConfig']['upload'][$location] . date('Y') . '/' . date('m') . '/' . date('d') . '/';
+        $config = $GLOBALS['systemConfig']['upload'][$location]['image'];
+        $this->accept = $config['accept'];
+        $this->imageSize = $config['size'];
+        $basePath = $config['path'] . date('Y') . '/' . date('m') . '/' . date('d') . '/';
         $this->pathOrigin = $basePath . '/o/';
         $this->pathBig = $basePath . '/b/';
         $this->pathMiddle = $basePath . '/m/';
