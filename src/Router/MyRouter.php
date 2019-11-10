@@ -5,6 +5,7 @@ namespace App\Router;
 use App\Action\CaptchaAction;
 use App\Action\HomeAction;
 use App\Action\TestAction;
+use App\Action\UploadImageAction;
 use App\Exception\ExceptionResponse;
 use App\Exception\FileNotExistsException;
 use App\Exception\TestException;
@@ -72,11 +73,7 @@ class MyRouter extends BaseRouter
         });
         
         // 上傳檔案
-        $this->app->post('/uploadFile', function (Request $request, Response $response, $args) use ($self) {
-            $message = (new UploadImageHelper('private'))->upload();
-            $response->getBody()->write("Upload " . $message . "!");
-            return $self->response($response);
-        });
+        $this->app->post('/upload-image', UploadImageAction::class);
 
         // 非固定的 uri 會自動對應到 resource 並使用 entity 對應資料庫
         $this->app->group('', function (RouteCollectorProxy $group) use ($self) {
