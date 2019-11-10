@@ -2,6 +2,7 @@
 
 namespace App\Router;
 
+use App\Action\CaptchaAction;
 use App\Action\HomeAction;
 use App\Action\TestAction;
 use App\Exception\ExceptionResponse;
@@ -48,13 +49,7 @@ class MyRouter extends BaseRouter
         $this->app->get('/test', TestAction::class);
 
         // 圖片驗證碼
-        $this->app->get('/captcha', function (Request $request, Response $response, $args) use ($self) {
-            $builder = new CaptchaBuilder;
-            $builder->build();
-            $builder->output();
-            $_SESSION['phrase'] = $builder->getPhrase();
-            return $self->response($response, $status = 200, $type = 'Content-Type', $header = 'image/jpeg');
-        });
+        $this->app->get('/captcha', CaptchaAction::class);
 
         $this->app->get('/download', function (Request $request, Response $response, $args) use ($self) {
             // TODO 一些權限檢查...
