@@ -4,6 +4,8 @@
 namespace App\Router;
 
 
+use App\Exception\AuthErrorException;
+use App\Exception\ExceptionResponse;
 use App\Middleware\CommonAfter2Middleware;
 use App\Middleware\CommonAfterMiddleware;
 use App\Middleware\CommonBeforeMiddleware;
@@ -32,6 +34,31 @@ class BaseRouter
         // 建立 app
         AppFactory::setContainer($container);
         $this->app = AppFactory::create();
+
+        // Middleware - Before
+        $beforeMiddleware = (new CommonBeforeMiddleware())->run();
+        $this->app->add($beforeMiddleware);
+        // Middleware - After
+        $afterMiddleware = (new CommonAfterMiddleware())->run();
+        $this->app->add($afterMiddleware);
+        $after2Middleware = (new CommonAfter2Middleware())->run();
+        $this->app->add($after2Middleware);
+
+        // Jwt 認證
+        $this->app->add(new JwtAuthentication([
+            "relaxed" => ["localhost", "127.0.0.1"],
+            "header" => "X-Token",
+            "regexp" => "/(.*)/",
+            "secret" => getenv('JWT_SECRET'),
+            "path" => ["/api/v1/member", "/api/v1/workbench"],  // 受保護區域
+            "error" => function () {  // 失敗時處理
+                try {
+                    throw new AuthErrorException();
+                } catch (AuthErrorException $e) {
+                    ExceptionResponse::response($e->getMessage(), $e->getCode());
+                }
+            }
+        ]));
     }
 
     public function get()
