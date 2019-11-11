@@ -36,6 +36,8 @@ class MyRouter extends BaseRouter
 
         // 固定的 uri 用來處理系統排程，非對應到 entity 的狀況
         $this->app->get('/', function (Request $request, Response $response, $args) use ($self) {
+            // 在這裡使用 env 的方式
+//            $jwt_secret = getenv('JWT_SECRET');
             $response->getBody()->write("Hello world!");
             return $self->response($response);
         });
