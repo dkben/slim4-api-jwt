@@ -8,17 +8,48 @@ use App\Action\HomeAction;
 use App\Action\ResourceAction;
 use App\Action\TestAction;
 use App\Action\UploadImageAction;
+use App\Exception\AuthErrorException;
+use App\Exception\ExceptionResponse;
+use App\Middleware\CommonAfter2Middleware;
+use App\Middleware\CommonAfterMiddleware;
+use App\Middleware\CommonBeforeMiddleware;
 use App\Middleware\CommonErrorMiddleware;
-use App\Resource\ResourceFactory;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteCollectorProxy;
+use Tuupola\Middleware\JwtAuthentication;
+
 
 class MyRouter extends BaseRouter
 {
     public function __construct()
     {
         parent::__construct();
+
+        // Middleware - Before
+        $beforeMiddleware = (new CommonBeforeMiddleware())->run();
+        $this->app->add($beforeMiddleware);
+        // Middleware - After
+        $afterMiddleware = (new CommonAfterMiddleware())->run();
+        $this->app->add($afterMiddleware);
+        $after2Middleware = (new CommonAfter2Middleware())->run();
+        $this->app->add($after2Middleware);
+
+        // Jwt 認證
+        $this->app->add(new JwtAuthentication([
+            "relaxed" => ["localhost", "127.0.0.1"],
+            "header" => "X-Token",
+            "regexp" => "/(.*)/",
+            "secret" => getenv('JWT_SECRET'),
+            "path" => ["/api/v1/member", "/api/v1/workbench"],  // 受保護區域
+            "error" => function () {  // 失敗時處理
+                try {
+                  throw new AuthErrorException();
+                } catch (AuthErrorException $e) {
+                    ExceptionResponse::response($e->getMessage(), $e->getCode());
+                }
+            }
+        ]));
 
         // Route 設定
         $this->setRoute();
@@ -38,6 +69,7 @@ class MyRouter extends BaseRouter
         $this->app->get('/', function (Request $request, Response $response, $args) use ($self) {
             // 在這裡使用 env 的方式
 //            $jwt_secret = getenv('JWT_SECRET');
+//            echo $jwt_secret; die;
             $response->getBody()->write("Hello world!");
             return $self->response($response);
         });
@@ -57,8 +89,26 @@ class MyRouter extends BaseRouter
         // 上傳檔案
         $this->app->post('/upload-image', UploadImageAction::class);
 
-        // 非固定的 uri 會自動對應到 resource 並使用 entity 對應資料庫
-        $this->app->group('', function (RouteCollectorProxy $group) use ($self) {
+        // 完全開放
+        $this->app->group('/api/v1', function (RouteCollectorProxy $group) use ($self) {
+            $group->get('/{resourceType}[/id/{id}]', ResourceAction::class . ':get');
+            $group->post('/{resourceType}', ResourceAction::class . ':post');
+            $group->put('/{resourceType}/id/{id}', ResourceAction::class . ':put');
+            $group->patch('/{resourceType}/id/{id}', ResourceAction::class . ':patch');
+            $group->delete('/{resourceType}/id/{id}', ResourceAction::class . ':delete');
+        });
+
+        // 需登入 member 身份
+        $this->app->group('/api/v1/member', function (RouteCollectorProxy $group) use ($self) {
+            $group->get('/{resourceType}[/id/{id}]', ResourceAction::class . ':get');
+            $group->post('/{resourceType}', ResourceAction::class . ':post');
+            $group->put('/{resourceType}/id/{id}', ResourceAction::class . ':put');
+            $group->patch('/{resourceType}/id/{id}', ResourceAction::class . ':patch');
+            $group->delete('/{resourceType}/id/{id}', ResourceAction::class . ':delete');
+        });
+
+        // 需登入管理員身份
+        $this->app->group('/api/v1/workbench', function (RouteCollectorProxy $group) use ($self) {
             $group->get('/{resourceType}[/id/{id}]', ResourceAction::class . ':get');
             $group->post('/{resourceType}', ResourceAction::class . ':post');
             $group->put('/{resourceType}/id/{id}', ResourceAction::class . ':put');

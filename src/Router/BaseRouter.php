@@ -15,6 +15,7 @@ use Redis;
 use Slim\Factory\AppFactory;
 use Swift_Mailer;
 use Swift_SmtpTransport;
+use Tuupola\Middleware\JwtAuthentication;
 
 
 class BaseRouter
@@ -31,14 +32,6 @@ class BaseRouter
         // 建立 app
         AppFactory::setContainer($container);
         $this->app = AppFactory::create();
-        // Middleware - Before
-        $beforeMiddleware = (new CommonBeforeMiddleware())->run();
-        $this->app->add($beforeMiddleware);
-        // Middleware - After
-        $afterMiddleware = (new CommonAfterMiddleware())->run();
-        $this->app->add($afterMiddleware);
-        $after2Middleware = (new CommonAfter2Middleware())->run();
-        $this->app->add($after2Middleware);
     }
 
     public function get()
