@@ -49,7 +49,9 @@ class BaseRouter
             "relaxed" => ["localhost", "127.0.0.1"],
             "header" => "X-Token",
             "regexp" => "/(.*)/",
+            "attribute" => "jwt",
             "secret" => getenv('JWT_SECRET'),
+            "algorithm" => ["HS256"],
             "path" => ["/api/v1/member", "/api/v1/workbench"],  // 受保護區域
             "error" => function () {  // 失敗時處理
                 try {

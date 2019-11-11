@@ -9,6 +9,7 @@ use App\Action\ResourceAction;
 use App\Action\TestAction;
 use App\Action\UploadImageAction;
 use App\Middleware\CommonErrorMiddleware;
+use Firebase\JWT\JWT;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteCollectorProxy;
