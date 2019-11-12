@@ -31,6 +31,7 @@ class MemberLoginAction
             $jwt = JWT::encode([
                 'id' => $member->getId(),
                 'email' => $member->getEmail(),
+                'exp' => time() + (60 * 60 * 24),
                 'scope' => [
                     'Api1' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
                     'Api2' => ['GET'],
