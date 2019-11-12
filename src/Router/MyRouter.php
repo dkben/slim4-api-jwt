@@ -17,9 +17,13 @@ use Slim\Routing\RouteCollectorProxy;
 
 class MyRouter extends BaseRouter
 {
+    private $prefix = '';
+
     public function __construct()
     {
         parent::__construct();
+
+        $this->prefix = '/api/v1';
 
         // Route 設定
         $this->setRoute();
@@ -36,7 +40,7 @@ class MyRouter extends BaseRouter
         $self = $this;
 
         // 固定的 uri 用來處理系統排程，非對應到 entity 的狀況
-        $this->app->get('/', function (Request $request, Response $response, $args) use ($self) {
+        $this->app->get($this->prefix . '/', function (Request $request, Response $response, $args) use ($self) {
             // 在這裡使用 env 的方式
 //            $jwt_secret = getenv('JWT_SECRET');
 //            echo $jwt_secret; die;
@@ -45,22 +49,22 @@ class MyRouter extends BaseRouter
         });
 
         // 單一固定的 uri 可以寫成 Action，直接執行該 Action
-        $this->app->get('/home', HomeAction::class);
+        $this->app->get($this->prefix . '/home', HomeAction::class);
 
         // 固定的 uri 用來處理系統排程，非對應到 entity 的狀況
-        $this->app->get('/test', TestAction::class);
+        $this->app->get($this->prefix . '/test', TestAction::class);
 
         // 圖片驗證碼
-        $this->app->get('/captcha', CaptchaAction::class);
+        $this->app->get($this->prefix . '/captcha', CaptchaAction::class);
 
         // 使用 header 方式下載 private 圖片
-        $this->app->get('/download-image', DownloadImageAction::class);
+        $this->app->get($this->prefix . '/download-image', DownloadImageAction::class);
         
         // 上傳檔案
-        $this->app->post('/upload-image', UploadImageAction::class);
+        $this->app->post($this->prefix . '/upload-image', UploadImageAction::class);
 
         // 完全開放
-        $this->app->group('/api/v1', function (RouteCollectorProxy $group) use ($self) {
+        $this->app->group($this->prefix, function (RouteCollectorProxy $group) use ($self) {
             $group->get('/{resourceType}[/id/{id}]', ResourceAction::class . ':get');
             $group->post('/{resourceType}', ResourceAction::class . ':post');
             $group->put('/{resourceType}/id/{id}', ResourceAction::class . ':put');
@@ -69,7 +73,7 @@ class MyRouter extends BaseRouter
         });
 
         // 需登入 member 身份
-        $this->app->group('/api/v1/member', function (RouteCollectorProxy $group) use ($self) {
+        $this->app->group($this->prefix . '/member', function (RouteCollectorProxy $group) use ($self) {
             $group->get('/{resourceType}[/id/{id}]', ResourceAction::class . ':get');
             $group->post('/{resourceType}', ResourceAction::class . ':post');
             $group->put('/{resourceType}/id/{id}', ResourceAction::class . ':put');
@@ -78,7 +82,7 @@ class MyRouter extends BaseRouter
         });
 
         // 需登入管理員身份
-        $this->app->group('/api/v1/workbench', function (RouteCollectorProxy $group) use ($self) {
+        $this->app->group($this->prefix . '/workbench', function (RouteCollectorProxy $group) use ($self) {
             $group->get('/{resourceType}[/id/{id}]', ResourceAction::class . ':get');
             $group->post('/{resourceType}', ResourceAction::class . ':post');
             $group->put('/{resourceType}/id/{id}', ResourceAction::class . ':put');
