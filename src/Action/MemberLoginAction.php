@@ -19,7 +19,7 @@ class MemberLoginAction
     }
 
     public function __invoke($request, $response, $args) {
-        GLOBAL $entityManager;
+        $entityManager = $this->container->get('entityManager');
         $data = json_decode($request->getBody()->getContents());
         $member = $entityManager->getRepository('\App\Entity\Member')->getByEmail($data->email);
 
