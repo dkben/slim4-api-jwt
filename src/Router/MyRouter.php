@@ -5,9 +5,11 @@ namespace App\Router;
 use App\Action\CaptchaAction;
 use App\Action\DownloadImageAction;
 use App\Action\HomeAction;
+use App\Action\MemberLoginAction;
 use App\Action\ResourceAction;
 use App\Action\TestAction;
 use App\Action\UploadImageAction;
+use App\Action\WorkbenchLoginAction;
 use App\Middleware\CommonErrorMiddleware;
 use Firebase\JWT\JWT;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -34,6 +36,8 @@ class MyRouter extends BaseRouter
 
     /**
      * Route 設定
+     * 請注意！Route 規則的擺放順序很重要
+     * 固定網址路由放前面，後面才是放動態路由，不然會解析錯誤
      */
     public function setRoute()
     {
@@ -62,6 +66,12 @@ class MyRouter extends BaseRouter
         
         // 上傳檔案
         $this->app->post($this->prefix . '/upload-image', UploadImageAction::class);
+
+        // 會員登入認證
+        $this->app->post($this->prefix . '/member-login', MemberLoginAction::class);
+
+        // 管理員登入驗證
+        $this->app->post($this->prefix . '/workbench-login', WorkbenchLoginAction::class);
 
         // 完全開放
         $this->app->group($this->prefix, function (RouteCollectorProxy $group) use ($self) {
