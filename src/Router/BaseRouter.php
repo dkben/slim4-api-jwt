@@ -11,6 +11,9 @@ use App\Middleware\CommonAfterMiddleware;
 use App\Middleware\CommonBeforeMiddleware;
 use App\Service\EmployeeService;
 use DI\Container;
+use Doctrine\Common\Cache\ApcuCache;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\Setup;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Redis;
@@ -47,12 +50,12 @@ class BaseRouter
         // Jwt 認證
         $this->app->add(new JwtAuthentication([
             "relaxed" => ["localhost", "127.0.0.1"],
-            "header" => "X-Token",
-            "regexp" => "/(.*)/",
+//            "header" => "X-Token",
+//            "regexp" => "/(.*)/",
             "attribute" => "jwt",
             "secret" => getenv('JWT_SECRET'),
             "algorithm" => ["HS256"],
-            "path" => ["/api/v1/workbench"],  // 受保護區域
+            "path" => ["/api/v1/member", "/api/v1/workbench"],  // 受保護區域
             "error" => function () {  // 失敗時處理
                 try {
                     throw new AuthErrorException();
@@ -75,6 +78,33 @@ class BaseRouter
     private function setContainer()
     {
         $container = new Container();
+
+        $container->set('entityManager', function () {
+            // Create a simple "default" Doctrine ORM configuration for Annotations
+            $isDevMode = true;
+            $proxyDir = null;
+            $cache = null;
+            $useSimpleAnnotationReader = false;
+            $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__ . "/src/Entity"), $isDevMode, $proxyDir, $cache, $useSimpleAnnotationReader);
+            // Use Query Cache - ApcuCache
+            $config->setQueryCacheImpl(new ApcuCache());
+            // Use Result Cache - ApcuCache
+            //$config->setResultCacheImpl(new ApcuCache());
+
+            // or if you prefer yaml or XML
+            //$config = Setup::createXMLMetadataConfiguration(array(__DIR__."/config/xml"), $isDevMode);
+            //$config = Setup::createYAMLMetadataConfiguration(array(__DIR__."/config/yaml"), $isDevMode);
+
+            // database configuration parameters
+            $conn = array(
+                'driver' => $GLOBALS['systemConfig']['db']['driver'],
+                'path' => $GLOBALS['systemConfig']['db']['path'],
+            );
+
+            // obtaining the entity manager
+            $entityManager = EntityManager::create($conn, $config);
+            return $entityManager;
+        });
 
         // Custom Service
         $container->set('employeeService', function () {

@@ -17,4 +17,17 @@ class MemberRepository extends EntityRepository
 
         return $queryBuilder->getQuery()->getResult();
     }
+
+    public function getByEmail($email)
+    {
+        $queryBuilder = $this->createQueryBuilder('a');
+
+        $queryBuilder
+            ->where('a.email = ?1')
+            ->setParameter(1, $email)
+        ;
+
+        return $queryBuilder->getQuery()->getSingleResult();
+    }
+
 }

@@ -4,7 +4,9 @@
 namespace App\Action;
 
 
+use App\Repository\MemberRepository;
 use App\Router\BaseRouter;
+use Firebase\JWT\JWT;
 use Psr\Container\ContainerInterface;
 
 
@@ -17,9 +19,26 @@ class MemberLoginAction
     }
 
     public function __invoke($request, $response, $args) {
+        GLOBAL $entityManager;
+        $data = json_decode($request->getBody()->getContents());
+        $member = $entityManager->getRepository('\App\Entity\Member')->getByEmail($data->email);
 
-
-        $response->getBody()->write("Member Login!");
-        return BaseRouter::staticResponse($response, 200);
+        if (!$member) {
+            $response->getBody()->write("Not find Member!");
+            return BaseRouter::staticResponse($response, 400);
+        } else {
+            $secret = getenv('JWT_SECRET');
+            $jwt = JWT::encode([
+                'id' => $member->getId(),
+                'email' => $member->getEmail(),
+                'scope' => [
+                    'Api1' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+                    'Api2' => ['GET'],
+                    ]
+            ], $secret, "HS256");
+            $response->getBody()->write(json_encode(['jwt' => $jwt]));
+            return BaseRouter::staticResponse($response, 200);
+        }
     }
+
 }

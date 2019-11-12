@@ -17,6 +17,11 @@ class ResourceAction
     }
 
     public function get($request, $response, $args) {
+//        $jwt = $request->getAttribute("jwt");
+//        echo "<pre>";
+//        print_r($jwt);
+//        echo "</pre>";
+//        die();
         $id = isset($args['id']) ? $args['id'] : null;
         $resource = ResourceFactory::get($args['resourceType']);
         if (is_string($resource)) {
