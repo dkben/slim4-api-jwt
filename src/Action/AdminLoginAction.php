@@ -9,7 +9,7 @@ use Firebase\JWT\JWT;
 use Psr\Container\ContainerInterface;
 
 
-class MemberLoginAction
+class AdminLoginAction
 {
     protected $container;
 
@@ -22,19 +22,19 @@ class MemberLoginAction
     {
         $entityManager = $this->container->get('entityManager');
         $data = json_decode($request->getBody()->getContents());
-        $member = $entityManager->getRepository('\App\Entity\Member')->getByEmail($data->email);
+        $admin = $entityManager->getRepository('\App\Entity\Admin')->getByEmail($data->email);
 
-        if (!$member) {
-            $response->getBody()->write("Not find Member!");
+        if (!$admin) {
+            $response->getBody()->write("Not find Admin!");
             return BaseRouter::staticResponse($response, 400);
         } else {
             $secret = getenv('JWT_SECRET');
             $jwt = JWT::encode([
-                'id' => $member->getId(),
-                'email' => $member->getEmail(),
+                'id' => $admin->getId(),
+                'email' => $admin->getEmail(),
 //                'exp' => time() + 60,
                 'exp' => time() + (60 * 60 * 24),
-                'role' => 'member',
+                'role' => 'admin',
                 'scope' => []
             ], $secret, "HS256");
 
@@ -42,5 +42,5 @@ class MemberLoginAction
             return BaseRouter::staticResponse($response, 200);
         }
     }
-
+    
 }

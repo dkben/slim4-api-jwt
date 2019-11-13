@@ -9,7 +9,7 @@ use App\Action\MemberLoginAction;
 use App\Action\ResourceAction;
 use App\Action\TestAction;
 use App\Action\UploadImageAction;
-use App\Action\WorkbenchLoginAction;
+use App\Action\AdminLoginAction;
 use App\Middleware\CommonErrorMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -70,7 +70,7 @@ class MyRouter extends BaseRouter
         $this->app->post($this->prefix . '/member-login', MemberLoginAction::class);
 
         // 管理員登入驗證
-        $this->app->post($this->prefix . '/workbench-login', WorkbenchLoginAction::class);
+        $this->app->post($this->prefix . '/admin-login', AdminLoginAction::class);
 
         // 完全開放
         $this->app->group($this->prefix, function (RouteCollectorProxy $group) use ($self) {
@@ -91,7 +91,7 @@ class MyRouter extends BaseRouter
         });
 
         // 需登入管理員身份
-        $this->app->group($this->prefix . '/workbench', function (RouteCollectorProxy $group) use ($self) {
+        $this->app->group($this->prefix . '/admin', function (RouteCollectorProxy $group) use ($self) {
             $group->get('/{resourceType}[/id/{id}]', ResourceAction::class . ':get');
             $group->post('/{resourceType}', ResourceAction::class . ':post');
             $group->put('/{resourceType}/id/{id}', ResourceAction::class . ':put');
