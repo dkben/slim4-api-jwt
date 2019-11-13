@@ -20,20 +20,20 @@ class ResourceFactory
         return $className;
     }
 
-    static public function create($className)
+    static public function create($className, $method, $role)
     {
         if (class_exists($className)) {
-            return new $className();
+            return new $className($method, $role);
         } else {
             throw new UriNotFoundException('Uri Not Found!', 100);
         }
     }
 
-    static public function get($resourceType)
+    static public function get($args, $method, $role)
     {
         try {
-            $className = self::getClassName($resourceType);
-            return self::create($className);
+            $className = self::getClassName($args['resourceType']);
+            return self::create($className, $method, $role);
         } catch (UriNotFoundException $e) {
             ExceptionResponse::response($e->getMessage(), $e->getCode());
             return '';

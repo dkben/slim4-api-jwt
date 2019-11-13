@@ -5,12 +5,29 @@ namespace App\Resource;
 
 
 use App\Entity\Member;
+use App\Exception\ExceptionResponse;
+use App\Exception\TestException;
 use App\Helper\RedisHelper;
 use App\Helper\SaveLogHelper;
 
 
 class MemberResource extends BaseResource
 {
+    public function __construct($method, $role)
+    {
+        parent::__construct();
+
+        $this->appendAuth("GET", '*');
+        $this->appendAuth("GET", 'admin');
+        $this->appendAuth("POST", 'admin');
+        $this->appendAuth("PUT", 'admin');
+        $this->appendAuth("PATCH", 'admin');
+        $this->appendAuth("DELETE", 'admin');
+
+        // 取得 $jwt['role'] 比對這支 Resource 的允許 Method 權限
+        $this->checkRole($method, $role);
+    }
+
     /**
      * @param $id
      *
@@ -35,7 +52,14 @@ class MemberResource extends BaseResource
             $data = (is_null($member)) ? '' : $this->convertToArray($member);
         }
 
-        // @TODO handle correct status when no data is found...
+        //  隨機成功、失敗
+//        try {
+//            if ((bool)random_int(0, 1)) {
+//                throw new TestException('Hi, Test Exception');
+//            }
+//        } catch (TestException $e) {
+//            ExceptionResponse::response($e->getMessage(), $e->getCode());
+//        }
 
         return json_encode($data);
     }

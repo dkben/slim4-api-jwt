@@ -13,24 +13,18 @@ use Psr\Container\ContainerInterface;
  * Class ResourceAction
  * @package App\Action
  */
-class ResourceAction
+class ResourceAction extends BaseAction
 {
-    protected $container;
-
-    public function __construct(ContainerInterface $container)
+    private function create($request, $args)
     {
-        $this->container = $container;
+        $jwt = $request->getAttribute("jwt");
+        return ResourceFactory::get($args, $request->getMethod(), $jwt['role']);
     }
 
     public function get($request, $response, $args)
     {
-//        $jwt = $request->getAttribute("jwt");
-//        echo "<pre>";
-//        print_r($jwt);
-//        echo "</pre>";
-//        die();
         $id = isset($args['id']) ? $args['id'] : null;
-        $resource = ResourceFactory::get($args['resourceType']);
+        $resource = $this->create($request, $args);
         if (is_string($resource)) {
             $data = $resource;
             $status = 400;
@@ -45,7 +39,7 @@ class ResourceAction
     public function post($request, $response, $args)
     {
         $data = json_decode($request->getBody()->getContents());
-        $resource = ResourceFactory::get($args['resourceType']);
+        $resource = $this->create($request, $response, $args);
         $response->getBody()->write($resource->post($data));
         return BaseRouter::staticResponse($response, 201);
     }
@@ -54,7 +48,7 @@ class ResourceAction
     {
         $id = isset($args['id']) ? $args['id'] : null;
         $data = json_decode($request->getBody()->getContents());
-        $resource = ResourceFactory::get($args['resourceType']);
+        $resource = $this->create($request, $response, $args);
         $response->getBody()->write($resource->put($id, $data));
         return BaseRouter::staticResponse($response, 200);
     }
@@ -63,7 +57,7 @@ class ResourceAction
     {
         $id = isset($args['id']) ? $args['id'] : null;
         $data = json_decode($request->getBody()->getContents());
-        $resource = ResourceFactory::get($args['resourceType']);
+        $resource = $this->create($request, $response, $args);
         $response->getBody()->write($resource->patch($id, $data));
         return BaseRouter::staticResponse($response, 200);
     }
@@ -72,7 +66,7 @@ class ResourceAction
     {
         $id = isset($args['id']) ? $args['id'] : null;
         $data = json_decode($request->getBody()->getContents());
-        $resource = ResourceFactory::get($args['resourceType']);
+        $resource = $this->create($request, $response, $args);
         $response->getBody()->write($resource->delete($id, $data));
         return BaseRouter::staticResponse($response, 200);
     }
