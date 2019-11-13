@@ -60,38 +60,22 @@ class MyRouter extends BaseRouter
         // 圖片驗證碼
         $this->app->get($this->prefix . '/captcha', CaptchaAction::class);
 
-        // 使用 header 方式下載 private 圖片
-        $this->app->get($this->prefix . '/download-image', DownloadImageAction::class);
-        
-        // 上傳檔案
-        $this->app->post($this->prefix . '/upload-image', UploadImageAction::class);
-
         // 會員登入認證
         $this->app->post($this->prefix . '/member-login', MemberLoginAction::class);
 
         // 管理員登入驗證
         $this->app->post($this->prefix . '/admin-login', AdminLoginAction::class);
 
-        // 完全開放
-        $this->app->group($this->prefix, function (RouteCollectorProxy $group) use ($self) {
-            $group->get('/{resourceType}[/id/{id}]', ResourceAction::class . ':get');
-            $group->post('/{resourceType}', ResourceAction::class . ':post');
-            $group->put('/{resourceType}/id/{id}', ResourceAction::class . ':put');
-            $group->patch('/{resourceType}/id/{id}', ResourceAction::class . ':patch');
-            $group->delete('/{resourceType}/id/{id}', ResourceAction::class . ':delete');
-        });
+        // 完全開放 get 的 GET 要獨立寫，可以使用快取，for 前台用戶
+        $this->app->get($this->prefix . '/{resourceType}[/id/{id}]', ResourceAction::class . ':get');
 
-        // 需登入 member 身份
-        $this->app->group($this->prefix . '/member', function (RouteCollectorProxy $group) use ($self) {
-            $group->get('/{resourceType}[/id/{id}]', ResourceAction::class . ':get');
-            $group->post('/{resourceType}', ResourceAction::class . ':post');
-            $group->put('/{resourceType}/id/{id}', ResourceAction::class . ':put');
-            $group->patch('/{resourceType}/id/{id}', ResourceAction::class . ':patch');
-            $group->delete('/{resourceType}/id/{id}', ResourceAction::class . ':delete');
-        });
-
-        // 需登入管理員身份
-        $this->app->group($this->prefix . '/admin', function (RouteCollectorProxy $group) use ($self) {
+        // 需登入 member, admin 身份，不管是那一種 Method 都要經過身份認證，且不能使用快取
+        $this->app->group($this->prefix . '/cover', function (RouteCollectorProxy $group) use ($self) {
+            // 使用 header 方式下載 private 圖片
+            $group->get('/download-image', DownloadImageAction::class);
+            // 上傳檔案
+            $group->post('/upload-image', UploadImageAction::class);
+            // 動態判斷
             $group->get('/{resourceType}[/id/{id}]', ResourceAction::class . ':get');
             $group->post('/{resourceType}', ResourceAction::class . ':post');
             $group->put('/{resourceType}/id/{id}', ResourceAction::class . ':put');
