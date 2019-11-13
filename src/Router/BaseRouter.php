@@ -80,29 +80,7 @@ class BaseRouter
         $container = new Container();
 
         $container->set('entityManager', function () {
-            // Create a simple "default" Doctrine ORM configuration for Annotations
-            $isDevMode = true;
-            $proxyDir = null;
-            $cache = null;
-            $useSimpleAnnotationReader = false;
-            $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__ . "/src/Entity"), $isDevMode, $proxyDir, $cache, $useSimpleAnnotationReader);
-            // Use Query Cache - ApcuCache
-            $config->setQueryCacheImpl(new ApcuCache());
-            // Use Result Cache - ApcuCache
-            //$config->setResultCacheImpl(new ApcuCache());
-
-            // or if you prefer yaml or XML
-            //$config = Setup::createXMLMetadataConfiguration(array(__DIR__."/config/xml"), $isDevMode);
-            //$config = Setup::createYAMLMetadataConfiguration(array(__DIR__."/config/yaml"), $isDevMode);
-
-            // database configuration parameters
-            $conn = array(
-                'driver' => $GLOBALS['systemConfig']['db']['driver'],
-                'path' => $GLOBALS['systemConfig']['db']['path'],
-            );
-
-            // obtaining the entity manager
-            $entityManager = EntityManager::create($conn, $config);
+            GLOBAL $entityManager;
             return $entityManager;
         });
 

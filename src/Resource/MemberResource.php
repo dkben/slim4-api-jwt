@@ -8,6 +8,7 @@ use App\Entity\Member;
 use App\Helper\RedisHelper;
 use App\Helper\SaveLogHelper;
 
+
 class MemberResource extends BaseResource
 {
     /**
