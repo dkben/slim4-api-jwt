@@ -1,4 +1,4 @@
-REST API Tutorial
+Slim4+API+JWT Tutorial
 =================
 
 
