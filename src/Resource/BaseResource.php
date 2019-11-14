@@ -13,13 +13,19 @@ abstract class BaseResource
 
     protected $app = null;
 
-    public function __construct()
+    protected $request, $response, $args;
+
+    public function __construct($request, $response, $args)
     {
         GLOBAL $app;
         GLOBAL $entityManager;
 
         $this->app = $app;
         $this->entityManager = $entityManager;
+
+        $this->request = $request;
+        $this->response = $response;
+        $this->args = $args;
     }
 
     /**
@@ -50,8 +56,13 @@ abstract class BaseResource
         array_push($this->APIRolePermission[$method], $role);
     }
 
-    protected function checkRole($method, $role)
+    protected function checkRole($request)
     {
+        // 取得 $jwt['role'] 比對這支 Resource 的允許 Method 權限
+        $jwt = $request->getAttribute("jwt");
+        $role = $jwt['role'];
+        $method = $request->getMethod();
+
         echo "<pre>";
         print_r($this->APIRolePermission);
         echo "</pre>";

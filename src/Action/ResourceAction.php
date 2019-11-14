@@ -6,7 +6,6 @@ namespace App\Action;
 
 use App\Resource\ResourceFactory;
 use App\Router\BaseRouter;
-use Psr\Container\ContainerInterface;
 
 /**
  * 依照網址動態使用 \Resource\ 裡的 Class Method
@@ -15,16 +14,15 @@ use Psr\Container\ContainerInterface;
  */
 class ResourceAction extends BaseAction
 {
-    private function create($request, $args)
+    private function create($request, $response, $args)
     {
-        $jwt = $request->getAttribute("jwt");
-        return ResourceFactory::get($args, $request->getMethod(), $jwt['role']);
+        return ResourceFactory::get($request, $response, $args);
     }
 
     public function get($request, $response, $args)
     {
         $id = isset($args['id']) ? $args['id'] : null;
-        $resource = $this->create($request, $args);
+        $resource = $this->create($request, $response, $args);
         if (is_string($resource)) {
             $data = $resource;
             $status = 400;

@@ -13,9 +13,9 @@ use App\Helper\SaveLogHelper;
 
 class MemberResource extends BaseResource
 {
-    public function __construct($method, $role)
+    public function __construct($request, $response, $args)
     {
-        parent::__construct();
+        parent::__construct($request, $response, $args);
 
         $this->appendAuth("GET", '*');
         $this->appendAuth("GET", 'admin');
@@ -24,8 +24,7 @@ class MemberResource extends BaseResource
         $this->appendAuth("PATCH", 'admin');
         $this->appendAuth("DELETE", 'admin');
 
-        // 取得 $jwt['role'] 比對這支 Resource 的允許 Method 權限
-        $this->checkRole($method, $role);
+        $this->checkRole($request);
     }
 
     /**
