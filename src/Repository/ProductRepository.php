@@ -15,6 +15,6 @@ class ProductRepository extends EntityRepository
             ->setParameter(1, $id);
         ;
 
-        return $queryBuilder->getQuery()->getResult();
+        return $queryBuilder->getQuery()->getSingleResult();
     }
 }

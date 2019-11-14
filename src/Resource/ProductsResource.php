@@ -49,7 +49,10 @@ class ProductsResource extends BaseResource
                 $products);
             $data = $products;
         } else {
-            $product = $this->getEntityManager()->find('\App\Entity\Product', $id);
+            // 使用 ORM 底層方法寫法
+//            $product = $this->getEntityManager()->find('\App\Entity\Product', $id);
+            // 使用自訂 Repository 寫法
+            $product = $this->getEntityManager()->getRepository('\App\Entity\Product')->getById($id);
             $data = (is_null($product)) ? '' : $this->convertToArray($product);
         }
 
