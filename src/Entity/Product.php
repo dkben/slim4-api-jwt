@@ -14,7 +14,7 @@ use Exception;
  * @ORM\Table(name="products")
  * @HasLifecycleCallbacks
  */
-class Product
+class Product extends BaseEntity
 {
     /**
      * @ORM\Id
@@ -28,7 +28,10 @@ class Product
      */
     protected $name;
 
-    // .. (other code)
+    /**
+     * @ORM\Column(type="string", name="prod_describe", nullable=true)
+     */
+    protected $prodDescribe;
 
     public function setName($name)
     {
@@ -45,6 +48,16 @@ class Product
         return $this->name;
     }
 
+    public function setProdDescribe($prodDescribe)
+    {
+        $this->prodDescribe = $prodDescribe;
+    }
+
+    public function getProdDescribe()
+    {
+        return $this->prodDescribe;
+    }
+
     /**
      * @PrePersist
      * @PreUpdate
@@ -55,6 +68,5 @@ class Product
 //            throw new Exception("is ben!");
 //        }
     }
-
-
+    
 }

@@ -63,9 +63,12 @@ class ProductsResource extends BaseResource
     {
         /** @var Product $product */
         $product = new Product();
-        $product->setName($data->name);
+        $product->set($data);
+        $product->setName(isset($data->name) ? $data->name : 'default');
+        $product->setProdDescribe(isset($data->prodDescribe) ? $data->prodDescribe : null);
         $this->getEntityManager()->persist($product);
         $this->getEntityManager()->flush();
+
         return json_encode($this->convertToArray($product));
     }
 
@@ -77,7 +80,8 @@ class ProductsResource extends BaseResource
 
         /** @var Product $product */
         $product = $this->getEntityManager()->find('App\Entity\Product', $id);
-        $product->setName($data->name);
+        $product->set($data);
+        $product->setName(isset($data->name) ? $data->name : 'default');
         $this->getEntityManager()->persist($product);
         $this->getEntityManager()->flush();
         return json_encode($this->convertToArray($product));
@@ -91,7 +95,8 @@ class ProductsResource extends BaseResource
 
         /** @var Product $product */
         $product = $this->getEntityManager()->find('App\Entity\Product', $id);
-        $product->setName($data->name);
+        $product->set($data);
+        $product->setName(isset($data->name) ? $data->name : 'default');
         $this->getEntityManager()->persist($product);
         $this->getEntityManager()->flush();
         return json_encode($this->convertToArray($product));
@@ -110,7 +115,8 @@ class ProductsResource extends BaseResource
     {
         return array(
             'id' => $product->getId(),
-            'name' => $product->getName()
+            'name' => $product->getName(),
+            'prodDescribe' => $product->getProdDescribe(),
         );
     }
 }

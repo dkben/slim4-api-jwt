@@ -89,4 +89,5 @@ abstract class BaseResource
             ExceptionResponse::response($e->getMessage(), $e->getCode());
         }
     }
+
 }
