@@ -10,6 +10,25 @@ use App\Helper\SaveLogHelper;
 
 class ProductsResource extends BaseResource
 {
+    public function __construct($request, $response, $args)
+    {
+        parent::__construct($request, $response, $args);
+
+        $this->appendAuth("GET", '*');
+
+        $this->appendAuth("POST", 'member');
+        $this->appendAuth("PUT", 'member');
+        $this->appendAuth("PATCH", 'member');
+        $this->appendAuth("DELETE", 'member');
+
+        $this->appendAuth("POST", 'admin');
+        $this->appendAuth("PUT", 'admin');
+        $this->appendAuth("PATCH", 'admin');
+        $this->appendAuth("DELETE", 'admin');
+
+        $this->checkRolePermission($request);
+    }
+
     /**
      * @param $id
      *
@@ -87,7 +106,8 @@ class ProductsResource extends BaseResource
         return json_encode($this->convertToArray($product));
     }
 
-    private function convertToArray(Product $product) {
+    private function convertToArray(Product $product)
+    {
         return array(
             'id' => $product->getId(),
             'name' => $product->getName()

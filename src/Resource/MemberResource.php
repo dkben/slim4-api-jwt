@@ -17,14 +17,15 @@ class MemberResource extends BaseResource
     {
         parent::__construct($request, $response, $args);
 
-        $this->appendAuth("GET", '*');
+//        $this->appendAuth("GET", '*');
         $this->appendAuth("GET", 'admin');
-        $this->appendAuth("POST", 'admin');
-        $this->appendAuth("PUT", 'admin');
-        $this->appendAuth("PATCH", 'admin');
-        $this->appendAuth("DELETE", 'admin');
+        $this->appendAuth("GET", 'member');
+//        $this->appendAuth("POST", 'admin');
+//        $this->appendAuth("PUT", 'admin');
+//        $this->appendAuth("PATCH", 'admin');
+//        $this->appendAuth("DELETE", 'admin');
 
-        $this->checkRole($request);
+        $this->checkRolePermission($request);
     }
 
     /**
@@ -111,7 +112,8 @@ class MemberResource extends BaseResource
         return json_encode($this->convertToArray($member));
     }
 
-    private function convertToArray(Member $member) {
+    private function convertToArray(Member $member)
+    {
         return array(
             'id' => $member->getId(),
             'name' => $member->getName(),

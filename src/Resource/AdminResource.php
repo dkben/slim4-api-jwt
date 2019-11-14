@@ -11,6 +11,21 @@ use App\Helper\SaveLogHelper;
 
 class AdminResource extends BaseResource
 {
+    public function __construct($request, $response, $args)
+    {
+        parent::__construct($request, $response, $args);
+
+//        $this->appendAuth("GET", '*');
+        $this->appendAuth("GET", 'admin');
+//        $this->appendAuth("GET", 'member');
+//        $this->appendAuth("POST", 'admin');
+//        $this->appendAuth("PUT", 'admin');
+//        $this->appendAuth("PATCH", 'admin');
+//        $this->appendAuth("DELETE", 'admin');
+
+        $this->checkRolePermission($request);
+    }
+
     /**
      * @param $id
      *
@@ -88,7 +103,8 @@ class AdminResource extends BaseResource
         return json_encode($this->convertToArray($admin));
     }
 
-    private function convertToArray(Admin $admin) {
+    private function convertToArray(Admin $admin)
+    {
         return array(
             'id' => $admin->getId(),
             'name' => $admin->getName(),

@@ -19,6 +19,7 @@ class CommonErrorMiddleware
             bool $logErrors,
             bool $logErrorDetails
         ) use ($self) {
+            // Method not allowed.
             $payload = ['error' => $exception->getMessage()];
 
             $response = $self->app->getResponseFactory()->createResponse();

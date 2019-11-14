@@ -34,7 +34,7 @@ class MemberLoginAction
                 'email' => $member->getEmail(),
 //                'exp' => time() + 60,
                 'exp' => time() + (60 * 60 * 24),
-                'role' => 'member',
+                'authRole' => ['member'],
                 'scope' => []
             ], $secret, "HS256");
 

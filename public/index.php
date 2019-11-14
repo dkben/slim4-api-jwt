@@ -20,10 +20,10 @@ $dotenv->load();
 $systemConfig = Yaml::parseFile('../config/system.yaml');
 
 // 自訂的 session 位置
-if (!file_exists(__DIR__ . '/../data/session/')) {
-    mkdir(__DIR__ . '/../data/session/', 0755 ,true);
+if (!file_exists(__DIR__ . $systemConfig['session']['path'])) {
+    mkdir(__DIR__ . $systemConfig['session']['path'], 0755 ,true);
 }
-session_save_path(__DIR__ . '/../data/session/');
+session_save_path(__DIR__ . $systemConfig['session']['path']);
 
 // Start the session
 session_start();

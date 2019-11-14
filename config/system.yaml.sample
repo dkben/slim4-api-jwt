@@ -1,20 +1,42 @@
 db:
   driver: pdo_sqlite
-  path: ../data/db.sqlite
+  path: ../data/sqlite/db.sqlite
+session:
+  path: /../data/session/
 mail:
-  smtp: smtp
+  smtp: smtp.mailtrap.io
   port: 2525
-  user: user
-  password: password
+  user: 820e2020b3af7b
+  password: f359d1bb292759
 logger:
   name: app
-  path: ../data/app.log
+  path: ../data/log/app.log
   level: Logger::WARNING
-  maxSize: 10000
+  maxSize: 1000000
   maxFiles: 3
 redis:
   host: 127.0.0.1
   port: 6379
 upload:
-  public: ../public/upload/
+  public:
+    image:
+      path: ../public/upload/images/
+      accept: ['jpg', 'jpeg', 'png']
+      size:
+        big: [1024, 1024]
+        middle: [512, 512]
+        small: [100, 100]
+    file:
+      path: ../public/upload/files/
+      accept: ['pdf', 'doc', 'docx']
   private:
+    image:
+      path: ../private/upload/images/
+      accept: ['jpg', 'jpeg', 'png']
+      size:
+        big: [1024, 1024]
+        middle: [512, 512]
+        small: [100, 100]
+    file:
+      path: ../private/upload/files/
+      accept: ['pdf', 'doc', 'docx']

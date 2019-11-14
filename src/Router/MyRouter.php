@@ -29,7 +29,7 @@ class MyRouter extends BaseRouter
         // Route 設定
         $this->setRoute();
 
-        // Error Handling，動態 URI 比對 Resource 時，永遠也不會使用到這個 ErrorMiddleware
+        // Error Handling
         (new CommonErrorMiddleware($this))->run();
     }
 

@@ -4,6 +4,9 @@
 namespace App\Resource;
 
 
+use App\Exception\ApiAccessDeniedException;
+use App\Exception\ExceptionResponse;
+
 abstract class BaseResource
 {
     /**
@@ -36,7 +39,7 @@ abstract class BaseResource
         return $this->entityManager;
     }
 
-    private $APIRolePermission = [
+    private $apiRolePermission = [
         "GET" => null,
         "POST" => null,
         "PUT" => null,
@@ -50,28 +53,40 @@ abstract class BaseResource
      */
     protected function appendAuth($method, $role)
     {
-        if (!empty($role) && is_null($this->APIRolePermission[$method]))
-            $this->APIRolePermission[$method] = [];
+        if (!empty($role) && is_null($this->apiRolePermission[$method]))
+            $this->apiRolePermission[$method] = [];
 
-        array_push($this->APIRolePermission[$method], $role);
+        array_push($this->apiRolePermission[$method], $role);
     }
 
-    protected function checkRole($request)
+    protected function checkRolePermission($request)
     {
-        // 取得 $jwt['role'] 比對這支 Resource 的允許 Method 權限
         $jwt = $request->getAttribute("jwt");
-        $role = $jwt['role'];
-        $method = $request->getMethod();
+        $authRole = $jwt['authRole'] ? : null;
+        $method = $request->getMethod() ? : null;
 
-        echo "<pre>";
-        print_r($this->APIRolePermission);
-        echo "</pre>";
-        echo "<pre>";
-        print_r($method);
-        echo "</pre>";
-        echo "<pre>";
-        print_r($role);
-        echo "</pre>";
-        die();
+        $acceptedRole = $this->apiRolePermission[$method];
+
+        $pass = is_null($acceptedRole) ? false : $acceptedRole[0] === '*';
+        $pass = $pass || $method === "OPTIONS";
+
+        if (!$pass) {
+            if (is_array($acceptedRole) && is_array($authRole)) {
+                foreach ($authRole as $role) {
+                    if (in_array($role, $acceptedRole)) {
+                        $pass = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        try {
+            if (is_null($method) || !$pass) {
+                throw new ApiAccessDeniedException();
+            }
+        } catch (ApiAccessDeniedException $e) {
+            ExceptionResponse::response($e->getMessage(), $e->getCode());
+        }
     }
 }

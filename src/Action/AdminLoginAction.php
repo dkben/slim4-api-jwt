@@ -34,7 +34,7 @@ class AdminLoginAction
                 'email' => $admin->getEmail(),
 //                'exp' => time() + 60,
                 'exp' => time() + (60 * 60 * 24),
-                'role' => 'admin',
+                'authRole' => ['admin'],
                 'scope' => []
             ], $secret, "HS256");
 
