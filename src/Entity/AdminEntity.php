@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\AdminRepository")
  * @ORM\Table(name="admiin")
  */
-class Admin
+class AdminEntity extends BaseEntity
 {
     /**
      * @ORM\Id
