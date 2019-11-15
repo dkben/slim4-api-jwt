@@ -20,7 +20,7 @@ class ResourceAction extends BaseAction
     private function create($request, $response, $args)
     {
         if (is_null($this->resource)) {
-            $this->resource = ResourceFactory::get($request, $response, $args);
+            $this->resource = ResourceFactory::create($request, $response, $args);
         }
 
         return $this->resource;
