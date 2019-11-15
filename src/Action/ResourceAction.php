@@ -14,9 +14,15 @@ use App\Router\BaseRouter;
  */
 class ResourceAction extends BaseAction
 {
+    private $resource = null;
+
     private function create($request, $response, $args)
     {
-        return ResourceFactory::get($request, $response, $args);
+        if (is_null($this->resource)) {
+            $this->resource = ResourceFactory::get($request, $response, $args);
+        }
+
+        return $this->resource;
     }
 
     public function get($request, $response, $args)
