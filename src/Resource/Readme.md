@@ -1,4 +1,4 @@
-Resource API 說明
+Resource 說明
 ===
 
 放在這裡的 Resource Class 是通過 jwt 身份認證後才使用
