@@ -19,6 +19,6 @@ class DownloadImageAction
     public function __invoke($request, $response, $args)
     {
         $downloadImageResource = new DownloadImageResource($request, $response, $args);
-        $downloadImageResource->get();
+        return $downloadImageResource->get();
     }
 }
