@@ -1,6 +1,7 @@
 <?php
 
 // cli-config.php
+use App\Command\DataFixturesCommand;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 
 require_once "bootstrap.php";
@@ -10,8 +11,7 @@ require_once "bootstrap.php";
 $helperSet = ConsoleRunner::createHelperSet($entityManager);
 
 $cli = ConsoleRunner::createApplication($helperSet, [
-//    new \Symfony\Component\Console\Command\Command('app2', 'my'),
-
+    new DataFixturesCommand()
 ]);
 
 return $cli->run();

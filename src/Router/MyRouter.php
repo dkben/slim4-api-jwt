@@ -52,9 +52,6 @@ class MyRouter extends BaseRouter
             return $self->response($response);
         });
 
-        // 資料填充 data fixtures
-        $this->app->get($this->prefix . '/data-fixtures', DataFixturesAction::class);
-
         // 單一固定的 uri 可以寫成 Action，直接執行該 Action
         $this->app->get($this->prefix . '/home', HomeAction::class);
 
