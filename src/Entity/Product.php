@@ -14,7 +14,7 @@ use Exception;
  * @ORM\Table(name="products")
  * @HasLifecycleCallbacks
  */
-class ProductEntity extends BaseEntity
+class Product extends BaseEntity
 {
     /**
      * @ORM\Id

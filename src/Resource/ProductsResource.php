@@ -4,7 +4,7 @@
 namespace App\Resource;
 
 
-use App\Entity\ProductEntity;
+use App\Entity\Product;
 use App\Helper\RedisHelper;
 use App\Helper\SaveLogHelper;
 
@@ -43,7 +43,7 @@ class ProductsResource extends BaseResource
 //        echo RedisHelper::get('slim4'); die;
 
         if ($id === null) {
-            $products = $this->getEntityManager()->getRepository('App\Entity\ProductEntity')->findAll();
+            $products = $this->getEntityManager()->getRepository('App\Entity\Product')->findAll();
             $products = array_map(function($user) {
                 return $this->convertToArray($user); },
                 $products);
@@ -52,7 +52,7 @@ class ProductsResource extends BaseResource
             // 使用 ORM 底層方法寫法
 //            $product = $this->getEntityManager()->find('\App\Entity\Product', $id);
             // 使用自訂 Repository 寫法
-            $product = $this->getEntityManager()->getRepository('\App\Entity\ProductEntity')->getById($id);
+            $product = $this->getEntityManager()->getRepository('\App\Entity\Product')->getById($id);
             $data = (is_null($product)) ? '' : $this->convertToArray($product);
         }
 
@@ -64,8 +64,8 @@ class ProductsResource extends BaseResource
     // POST, PUT, DELETE methods...
     public function post($data)
     {
-        /** @var ProductEntity $product */
-        $product = new ProductEntity();
+        /** @var Product $product */
+        $product = new Product();
         $product->set($data);
         $product->setName(isset($data->name) ? $data->name : 'default');
         $product->setProdDescribe(isset($data->prodDescribe) ? $data->prodDescribe : null);
@@ -81,8 +81,8 @@ class ProductsResource extends BaseResource
         // return valid status code or throw an exception
         // depends on the concrete implementation
 
-        /** @var ProductEntity $product */
-        $product = $this->getEntityManager()->find('App\Entity\ProductEntity', $id);
+        /** @var Product $product */
+        $product = $this->getEntityManager()->find('App\Entity\Product', $id);
         $product->set($data);
         $product->setName(isset($data->name) ? $data->name : 'default');
         $this->getEntityManager()->persist($product);
@@ -96,8 +96,8 @@ class ProductsResource extends BaseResource
         // return valid status code or throw an exception
         // depends on the concrete implementation
 
-        /** @var ProductEntity $product */
-        $product = $this->getEntityManager()->find('App\Entity\ProductEntity', $id);
+        /** @var Product $product */
+        $product = $this->getEntityManager()->find('App\Entity\Product', $id);
         $product->set($data);
         $product->setName(isset($data->name) ? $data->name : 'default');
         $this->getEntityManager()->persist($product);
@@ -107,14 +107,14 @@ class ProductsResource extends BaseResource
 
     public function delete($id, $data)
     {
-        $product = $this->getEntityManager()->find('App\Entity\ProductEntity', $id);
+        $product = $this->getEntityManager()->find('App\Entity\Product', $id);
 
         $this->getEntityManager()->remove($product);
         $this->getEntityManager()->flush();
         return json_encode($this->convertToArray($product));
     }
 
-    private function convertToArray(ProductEntity $product)
+    private function convertToArray(Product $product)
     {
         return array(
             'id' => $product->getId(),

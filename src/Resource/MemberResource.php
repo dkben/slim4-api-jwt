@@ -4,7 +4,7 @@
 namespace App\Resource;
 
 
-use App\Entity\MemberEntity;
+use App\Entity\Member;
 use App\Exception\ExceptionResponse;
 use App\Exception\TestException;
 use App\Helper\RedisHelper;
@@ -42,13 +42,13 @@ class MemberResource extends BaseResource
 //        echo RedisHelper::get('slim4'); die;
 
         if ($id === null) {
-            $member = $this->getEntityManager()->getRepository('App\Entity\MemberEntity')->findAll();
+            $member = $this->getEntityManager()->getRepository('App\Entity\Member')->findAll();
             $member = array_map(function($member) {
                 return $this->convertToArray($member); },
                 $member);
             $data = $member;
         } else {
-            $member = $this->getEntityManager()->find('\App\Entity\MemberEntity', $id);
+            $member = $this->getEntityManager()->find('\App\Entity\Member', $id);
             $data = (is_null($member)) ? '' : $this->convertToArray($member);
         }
 
@@ -67,8 +67,8 @@ class MemberResource extends BaseResource
     // POST, PUT, DELETE methods...
     public function post($data)
     {
-        /** @var MemberEntity $member */
-        $member = new MemberEntity();
+        /** @var Member $member */
+        $member = new Member();
         $member->setName($data->name);
         $this->getEntityManager()->persist($member);
         $this->getEntityManager()->flush();
@@ -81,8 +81,8 @@ class MemberResource extends BaseResource
         // return valid status code or throw an exception
         // depends on the concrete implementation
 
-        /** @var MemberEntity $member */
-        $member = $this->getEntityManager()->find('App\Entity\MemberEntity', $id);
+        /** @var Member $member */
+        $member = $this->getEntityManager()->find('App\Entity\Member', $id);
         $member->setName($data->name);
         $this->getEntityManager()->persist($member);
         $this->getEntityManager()->flush();
@@ -95,8 +95,8 @@ class MemberResource extends BaseResource
         // return valid status code or throw an exception
         // depends on the concrete implementation
 
-        /** @var MemberEntity $member */
-        $member = $this->getEntityManager()->find('App\Entity\MemberEntity', $id);
+        /** @var Member $member */
+        $member = $this->getEntityManager()->find('App\Entity\Member', $id);
         $member->setName($data->name);
         $this->getEntityManager()->persist($member);
         $this->getEntityManager()->flush();
@@ -105,14 +105,14 @@ class MemberResource extends BaseResource
 
     public function delete($id, $data)
     {
-        $member = $this->getEntityManager()->find('App\Entity\MemberEntity', $id);
+        $member = $this->getEntityManager()->find('App\Entity\Member', $id);
 
         $this->getEntityManager()->remove($member);
         $this->getEntityManager()->flush();
         return json_encode($this->convertToArray($member));
     }
 
-    private function convertToArray(MemberEntity $member)
+    private function convertToArray(Member $member)
     {
         return array(
             'id' => $member->getId(),

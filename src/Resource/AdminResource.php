@@ -4,7 +4,7 @@
 namespace App\Resource;
 
 
-use App\Entity\AdminEntity;
+use App\Entity\Admin;
 use App\Helper\RedisHelper;
 use App\Helper\SaveLogHelper;
 
@@ -40,13 +40,13 @@ class AdminResource extends BaseResource
 //        echo RedisHelper::get('slim4'); die;
 
         if ($id === null) {
-            $admin = $this->getEntityManager()->getRepository('App\Entity\AdminEntity')->findAll();
+            $admin = $this->getEntityManager()->getRepository('App\Entity\Admin')->findAll();
             $admin = array_map(function($admin) {
                 return $this->convertToArray($admin); },
                 $admin);
             $data = $admin;
         } else {
-            $admin = $this->getEntityManager()->find('\App\Entity\AdminEntity', $id);
+            $admin = $this->getEntityManager()->find('\App\Entity\Admin', $id);
             $data = (is_null($admin)) ? '' : $this->convertToArray($admin);
         }
 
@@ -58,8 +58,8 @@ class AdminResource extends BaseResource
     // POST, PUT, DELETE methods...
     public function post($data)
     {
-        /** @var AdminEntity $admin */
-        $admin = new AdminEntity();
+        /** @var Admin $admin */
+        $admin = new Admin();
         $admin->setName($data->name);
         $this->getEntityManager()->persist($admin);
         $this->getEntityManager()->flush();
@@ -72,8 +72,8 @@ class AdminResource extends BaseResource
         // return valid status code or throw an exception
         // depends on the concrete implementation
 
-        /** @var AdminEntity $admin */
-        $admin = $this->getEntityManager()->find('App\Entity\AdminEntity', $id);
+        /** @var Admin $admin */
+        $admin = $this->getEntityManager()->find('App\Entity\Admin', $id);
         $admin->setName($data->name);
         $this->getEntityManager()->persist($admin);
         $this->getEntityManager()->flush();
@@ -86,8 +86,8 @@ class AdminResource extends BaseResource
         // return valid status code or throw an exception
         // depends on the concrete implementation
 
-        /** @var AdminEntity $admin */
-        $admin = $this->getEntityManager()->find('App\Entity\AdminEntity', $id);
+        /** @var Admin $admin */
+        $admin = $this->getEntityManager()->find('App\Entity\Admin', $id);
         $admin->setName($data->name);
         $this->getEntityManager()->persist($admin);
         $this->getEntityManager()->flush();
@@ -96,14 +96,14 @@ class AdminResource extends BaseResource
 
     public function delete($id, $data)
     {
-        $admin = $this->getEntityManager()->find('App\Entity\AdminEntity', $id);
+        $admin = $this->getEntityManager()->find('App\Entity\Admin', $id);
 
         $this->getEntityManager()->remove($admin);
         $this->getEntityManager()->flush();
         return json_encode($this->convertToArray($admin));
     }
 
-    private function convertToArray(AdminEntity $admin)
+    private function convertToArray(Admin $admin)
     {
         return array(
             'id' => $admin->getId(),

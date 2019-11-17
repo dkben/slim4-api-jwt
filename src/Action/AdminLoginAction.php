@@ -22,7 +22,7 @@ class AdminLoginAction
     {
         $entityManager = $this->container->get('entityManager');
         $data = json_decode($request->getBody()->getContents());
-        $admin = $entityManager->getRepository('\App\Entity\AdminEntity')->getByEmail($data->email);
+        $admin = $entityManager->getRepository('\App\Entity\Admin')->getByEmail($data->email);
 
         if (!$admin) {
             $response->getBody()->write("Not find Admin!");

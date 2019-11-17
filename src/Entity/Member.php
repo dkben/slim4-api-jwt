@@ -6,10 +6,10 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\AdminRepository")
- * @ORM\Table(name="admiin")
+ * @ORM\Entity(repositoryClass="App\Repository\MemberRepository")
+ * @ORM\Table(name="member")
  */
-class AdminEntity extends BaseEntity
+class Member extends BaseEntity
 {
     /**
      * @ORM\Id

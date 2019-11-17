@@ -22,7 +22,7 @@ class MemberLoginAction
     {
         $entityManager = $this->container->get('entityManager');
         $data = json_decode($request->getBody()->getContents());
-        $member = $entityManager->getRepository('\App\Entity\MemberEntity')->getByEmail($data->email);
+        $member = $entityManager->getRepository('\App\Entity\Member')->getByEmail($data->email);
 
         if (!$member) {
             $response->getBody()->write("Not find Member!");
