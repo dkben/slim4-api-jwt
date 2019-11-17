@@ -26,7 +26,7 @@ abstract class BaseFixture extends AbstractFixture
             $entity = new $className();
             $factory($entity, $i);
 
-            $this->manager->presist($entity);
+            $this->manager->persist($entity);
 
             $this->addReference($className . '_' . $i, $entity);
         }

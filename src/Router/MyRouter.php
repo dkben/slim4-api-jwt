@@ -3,6 +3,7 @@
 namespace App\Router;
 
 use App\Action\CaptchaAction;
+use App\Action\DataFixturesAction;
 use App\Action\DownloadImageAction;
 use App\Action\HomeAction;
 use App\Action\MemberLoginAction;
@@ -50,6 +51,9 @@ class MyRouter extends BaseRouter
             $response->getBody()->write("Hello world!");
             return $self->response($response);
         });
+
+        // 資料填充 data fixtures
+        $this->app->get($this->prefix . '/data-fixtures', DataFixturesAction::class);
 
         // 單一固定的 uri 可以寫成 Action，直接執行該 Action
         $this->app->get($this->prefix . '/home', HomeAction::class);
