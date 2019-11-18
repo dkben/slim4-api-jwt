@@ -10,15 +10,34 @@ use Doctrine\Migrations\Tools\Console\Command\LatestCommand;
 use Doctrine\Migrations\Tools\Console\Command\MigrateCommand;
 use Doctrine\Migrations\Tools\Console\Command\StatusCommand;
 use Doctrine\Migrations\Tools\Console\Command\VersionCommand;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
+use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
+use Doctrine\ORM\Tools\Setup;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
 
 require_once "bootstrap.php";
 
-$db = $entityManager->getConnection();
+$paths = [__DIR__ . '/src/Entity'];
+$isDevMode = true;
+
+$dbParams = include 'migrations-db.php';
+
+$entityManager = EntityManager::create($dbParams, $config);
+$platform = $entityManager->getConnection()->getDatabasePlatform();
+$platform->registerDoctrineTypeMapping('enum', 'string');
+
+$config = Setup::createAnnotationMetadataConfiguration(
+    $paths,
+    $isDevMode,
+    null,
+    null,
+    false);
+
 $helperSet = new HelperSet(array(
-    'db' => new ConnectionHelper($db),
+    'em' => new EntityManagerHelper($entityManager),
+    'db' => new ConnectionHelper($entityManager->getConnection()),
     'question' => new QuestionHelper()
 ));
 
