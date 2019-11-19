@@ -12,12 +12,11 @@ use App\Router\MyRouter;
 use Symfony\Component\Yaml\Yaml;
 
 require __DIR__ . '/../vendor/autoload.php';
+$systemConfig = Yaml::parseFile(__DIR__ . '/../config/system.yaml');
 require __DIR__ . './../bootstrap.php';
 
 $dotenv = Dotenv\Dotenv::create(__DIR__ . '/../');
 $dotenv->load();
-
-$systemConfig = Yaml::parseFile('../config/system.yaml');
 
 // 自訂的 session 位置
 if (!file_exists(__DIR__ . $systemConfig['session']['path'])) {
