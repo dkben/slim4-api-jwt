@@ -6,16 +6,22 @@ namespace App\DataFixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use Faker\Factory;
+use Faker\Generator;
 
 abstract class BaseFixture extends AbstractFixture
 {
     private $manager;
+
+    /** @var Generator */
+    protected $faker;
 
     abstract protected function loadData(ObjectManager $em);
 
     public function load(ObjectManager $manager)
     {
         $this->manager = $manager;
+        $this->faker = Factory::create();
 
         $this->loadData($manager);
     }
