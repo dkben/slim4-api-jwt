@@ -1,9 +1,10 @@
 <?php
 
+
 namespace App\Router;
 
+
 use App\Action\CaptchaAction;
-use App\Action\DataFixturesAction;
 use App\Action\DownloadImageAction;
 use App\Action\HomeAction;
 use App\Action\MemberLoginAction;

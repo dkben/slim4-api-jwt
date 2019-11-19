@@ -23,6 +23,7 @@ use Tuupola\Middleware\JwtAuthentication;
 class BaseRouter
 {
     protected $config;
+
     public $app;
 
     public function __construct()
