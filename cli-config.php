@@ -1,9 +1,9 @@
 <?php
 /**
+ * cli-config.php
  * 這支檔案 for Doctrine CLI 指令使用，部份設定會與 bootstrap.php 重覆
  */
 
-// cli-config.php
 use App\Command\DataFixturesCommand;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
@@ -26,14 +26,7 @@ use Symfony\Component\Yaml\Yaml;
 
 $systemConfig = Yaml::parseFile(__DIR__ . '/config/system.yaml');
 
-$paths = [__DIR__ . '/src/Entity'];
-$isDevMode = true;
-
-$dbParams = [
-    'host' => 'localhost',
-    'driver' => $systemConfig['db']['driver'],
-    'path' => __DIR__ . $systemConfig['db']['path']
-];
+$dbParams = include_once __DIR__ . '/config/db-config.php';
 
 $connection = DriverManager::getConnection($dbParams);
 $configuration = new Configuration($connection);
@@ -47,6 +40,8 @@ $configuration->setMigrationsDirectory(__DIR__ . '/src/Migrations');
 $configuration->setAllOrNothing(true);
 $configuration->setCheckDatabasePlatform(false);
 
+$paths = [__DIR__ . '/src/Entity'];
+$isDevMode = true;
 $config = Setup::createAnnotationMetadataConfiguration(
     $paths,
     $isDevMode,
