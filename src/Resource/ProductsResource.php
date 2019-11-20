@@ -43,20 +43,23 @@ class ProductsResource extends BaseResource
 //        echo RedisHelper::get('slim4'); die;
 
         if ($id === null) {
-            $products = $this->getEntityManager()->getRepository('App\Entity\Product')->findAll();
-            $products = array_map(function($user) {
-                return $this->convertToArray($user); },
-                $products);
+            $products = $this->getEntityManager()->getRepository(Product::class)->findAll();
+            $products = array_map(
+                function($product) {
+                    return $this->convertToArray($product); },
+                $products
+            );
             $data = $products;
         } else {
             // 使用 ORM 底層方法寫法
-//            $product = $this->getEntityManager()->find('\App\Entity\Product', $id);
+            /** @var Product $product */
+//            $product = $this->getEntityManager()->find(Product::class, $id);
+
             // 使用自訂 Repository 寫法
-            $product = $this->getEntityManager()->getRepository('\App\Entity\Product')->getById($id);
+            /** @var Product $product */
+            $product = $this->getEntityManager()->getRepository(Product::class)->getById($id);
             $data = (is_null($product)) ? '' : $this->convertToArray($product);
         }
-
-        // @TODO handle correct status when no data is found...
 
         return json_encode($data);
     }
@@ -107,6 +110,7 @@ class ProductsResource extends BaseResource
 
     public function delete($id, $data)
     {
+        /** @var Product $product */
         $product = $this->getEntityManager()->find('App\Entity\Product', $id);
 
         $this->getEntityManager()->remove($product);

@@ -2,17 +2,19 @@
 
 namespace App\Repository;
 
+use App\Entity\Product;
 use Doctrine\ORM\EntityRepository;
+
 
 class ProductRepository extends EntityRepository
 {
-    public function getById($id)
+    public function getById($id): Product
     {
         $queryBuilder = $this->createQueryBuilder('a');
 
         $queryBuilder
-            ->where('a.id = ?1')
-            ->setParameter(1, $id);
+            ->where('a.id = :id')
+            ->setParameter(':id', $id);
         ;
 
         return $queryBuilder->getQuery()->getSingleResult();
