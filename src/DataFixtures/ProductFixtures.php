@@ -15,6 +15,7 @@ class ProductFixtures extends BaseFixture
         $this->createMany(Product::class, 10, function (Product $product, $count) {
             $product->setName($this->faker->userName);
             $product->setProdDescribe($this->faker->text());
+            $product->setPayment($this->faker->numberBetween(100, 999));
         });
 
         $manager->flush();

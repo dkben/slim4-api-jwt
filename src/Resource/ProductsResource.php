@@ -120,6 +120,7 @@ class ProductsResource extends BaseResource
             'id' => $product->getId(),
             'name' => $product->getName(),
             'prodDescribe' => $product->getProdDescribe(),
+            'price' => $product->getPrice()
         );
     }
 }

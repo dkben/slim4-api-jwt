@@ -7,7 +7,9 @@
 use Doctrine\Common\Cache\ApcuCache;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
+AnnotationRegistry::registerUniqueLoader('class_exists');
 require_once "vendor/autoload.php";
 
 // Create a simple "default" Doctrine ORM configuration for Annotations

@@ -5,6 +5,7 @@
  */
 
 use App\Command\DataFixturesCommand;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\Migrations\Configuration\Configuration;
@@ -39,6 +40,8 @@ $configuration->setMigrationsExecutedAtColumnName('executed_at');
 $configuration->setMigrationsDirectory(__DIR__ . '/src/Migrations');
 $configuration->setAllOrNothing(true);
 $configuration->setCheckDatabasePlatform(false);
+
+AnnotationRegistry::registerUniqueLoader('class_exists');
 
 $paths = [__DIR__ . '/src/Entity'];
 $isDevMode = true;

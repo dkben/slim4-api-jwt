@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\PrePersist;
 use Doctrine\ORM\Mapping\PreUpdate;
+use JMS\Serializer\Annotation as Serializer;
 use Exception;
 
 
@@ -33,6 +34,11 @@ class Product extends BaseEntity
      */
     protected $prodDescribe;
 
+    /**
+     * @ORM\Column(type="integer", name="payment", nullable=true)
+     */
+    protected $payment;
+
     public function setName($name)
     {
         $this->name = $name;
@@ -59,6 +65,15 @@ class Product extends BaseEntity
     }
 
     /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("price")
+     */
+    public function getPrice()
+    {
+        return $this->id + 1000;
+    }
+
+    /**
      * @PrePersist
      * @PreUpdate
      */
@@ -67,6 +82,16 @@ class Product extends BaseEntity
 //        if ($this->name == 'ben') {
 //            throw new Exception("is ben!");
 //        }
+    }
+
+    public function getPayment()
+    {
+        return $this->payment;
+    }
+
+    public function setPayment($payment): void
+    {
+        $this->payment = $payment;
     }
 
 }
