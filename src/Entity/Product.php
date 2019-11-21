@@ -6,7 +6,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\PrePersist;
 use Doctrine\ORM\Mapping\PreUpdate;
-use JMS\Serializer\Annotation as Serializer;
 
 
 /**
@@ -63,10 +62,6 @@ class Product extends BaseEntity
         return $this->prodDescribe;
     }
 
-    /**
-     * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("price")
-     */
     public function getPrice()
     {
         return $this->id + 1000;
