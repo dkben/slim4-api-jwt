@@ -73,17 +73,6 @@ class Product extends BaseEntity
         return $this->id + 1000;
     }
 
-    /**
-     * @PrePersist
-     * @PreUpdate
-     */
-    public function validate()
-    {
-//        if ($this->name == 'ben') {
-//            throw new Exception("is ben!");
-//        }
-    }
-
     public function getPayment()
     {
         return $this->payment;
@@ -92,6 +81,17 @@ class Product extends BaseEntity
     public function setPayment($payment): void
     {
         $this->payment = $payment;
+    }
+
+    /**
+     * @PrePersist
+     * @PreUpdate
+     */
+    public function validate()
+    {
+        if (is_null($this->payment) || !isset($this->payment) || !is_int($this->payment)) {
+            throw new Exception("payment is not integer!");
+        }
     }
 
 }
