@@ -4,6 +4,10 @@
 namespace App\Entity;
 
 
+use App\Exception\EntityValidateException;
+use App\Exception\ExceptionResponse;
+
+
 class BaseEntity
 {
     /**
@@ -39,6 +43,21 @@ class BaseEntity
             } else {
                 return false;
             }
+        }
+    }
+
+    /**
+     * 是否需要拋出異常
+     * @param $result boolean
+     */
+    protected function entityValidate($result)
+    {
+        try {
+            if ($result) {
+                throw new EntityValidateException();
+            }
+        } catch (EntityValidateException $e) {
+            ExceptionResponse::response($e->getMessage(), $e->getCode());
         }
     }
 

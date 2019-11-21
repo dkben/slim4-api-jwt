@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\PrePersist;
 use Doctrine\ORM\Mapping\PreUpdate;
 use JMS\Serializer\Annotation as Serializer;
-use Exception;
 
 
 /**
@@ -89,9 +88,9 @@ class Product extends BaseEntity
      */
     public function validate()
     {
-        if (is_null($this->payment) || !isset($this->payment) || !is_int($this->payment)) {
-            throw new Exception("payment is not integer!");
-        }
+        $this->entityValidate(
+            is_null($this->payment) || !isset($this->payment) || !is_int($this->payment)
+        );
     }
 
 }
