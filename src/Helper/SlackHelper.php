@@ -12,6 +12,8 @@ class SlackHelper
     {
         $config = $GLOBALS['systemConfig']['slack'];
 
+        if (!$config['sendError']) return;
+
         // Instantiate without defaults
         /** @var Client $client */
         // $client = new Client('https://hooks.slack.com/services/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');
