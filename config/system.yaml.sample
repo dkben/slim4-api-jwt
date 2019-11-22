@@ -1,13 +1,23 @@
 db:
   driver: pdo_sqlite
-  path: ../data/sqlite/db.sqlite
+  path: /../data/sqlite/db.sqlite
+slack:
+  username: 開發中
+  channel: '#xxx'
+  webHooks: https://hooks.slack.com/services/TEHA6GH1Q/BQETZL8EN/xxxxxxxxxxxxxx
+  sendError: true
+  authorName: xxx
+  authorLink: https://xxxxxxxx
+php:
+  displayErrors: true
+  logErrors: true
 session:
   path: /../data/session/
 mail:
   smtp: smtp.mailtrap.io
   port: 2525
-  user: 820e2020b3af7b
-  password: f359d1bb292759
+  user: username
+  password: password
 logger:
   name: app
   path: ../data/log/app.log

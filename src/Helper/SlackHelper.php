@@ -24,11 +24,19 @@ class SlackHelper
         $settings = [
             'username' => $config['username'],
             'channel' => $config['channel'],
-            'link_names' => true
+            'link_names' => true,
+            'icon' => ':ghost:'
         ];
 
+        /** @var Client $client */
         $client = new Client($config['webHooks'], $settings);
 
-        $client->send($message);
+        $client->attach([
+            'fallback' => $message,
+            'text' => $message,
+            'color' => 'danger',
+            'author_name' => $config['authorName'],
+            'author_link' => $config['authorLink'],
+        ])->send();
     }
 }
