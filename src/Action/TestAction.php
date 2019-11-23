@@ -14,11 +14,13 @@ class TestAction
 {
     protected $container;
 
-    public function __construct(ContainerInterface $container) {
+    public function __construct(ContainerInterface $container)
+    {
         $this->container = $container;
     }
 
-    public function __invoke($request, $response, $args) {
+    public function __invoke($request, $response, $args)
+    {
         //  隨機成功、失敗
         try {
             if ((bool)random_int(0, 1)) {
