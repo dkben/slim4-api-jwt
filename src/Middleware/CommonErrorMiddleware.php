@@ -4,6 +4,7 @@
 namespace App\Middleware;
 
 
+use App\Helper\SlackHelper;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
@@ -19,6 +20,7 @@ class CommonErrorMiddleware
             bool $logErrors,
             bool $logErrorDetails
         ) use ($self) {
+            SlackHelper::send($exception->getMessage());
             // Method not allowed.
             $payload = ['error' => $exception->getMessage()];
 
