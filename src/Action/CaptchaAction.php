@@ -19,8 +19,9 @@ class CaptchaAction
     public function __invoke($request, $response, $args) {
         $builder = new CaptchaBuilder;
         $builder->build();
-        $builder->output();
         $_SESSION['phrase'] = $builder->getPhrase();
+        header('Content-type: image/jpeg');
+        $builder->output();
         return BaseRouter::staticResponse($response, $status = 200, $type = 'Content-Type', $header = 'image/jpeg');
     }
 }

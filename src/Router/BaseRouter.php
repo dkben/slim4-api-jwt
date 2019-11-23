@@ -137,6 +137,16 @@ class BaseRouter
 
     static public function staticResponse($response, $status = 200, $type = 'Content-Type', $header = 'application/json')
     {
+        echo "<pre>";
+        print_r($status);
+        echo "</pre>";
+        echo "<pre>";
+        print_r($type);
+        echo "</pre>";
+        echo "<pre>";
+        print_r($header);
+        echo "</pre>";
+        die();
         return $response
             ->withHeader($type, $header)
             ->withStatus($status)

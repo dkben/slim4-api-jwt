@@ -37,9 +37,12 @@ try {
 
     $app = (new MyRouter())->get();
     $app->run();
-} catch (\Exception $exception) {
-    SlackHelper::send($exception->getMessage());
-    echo var_export($exception, true) . PHP_EOL;
+} catch (\Exception $error) {
+    SlackHelper::send($error->getMessage());
+    echo var_export($error, true) . PHP_EOL;
+} catch (\TypeError $error) {
+    SlackHelper::send($error->getMessage());
+    echo var_export($error, true) . PHP_EOL;
 } catch (\Error $error) {
     SlackHelper::send($error->getMessage());
     echo var_export($error, true) . PHP_EOL;

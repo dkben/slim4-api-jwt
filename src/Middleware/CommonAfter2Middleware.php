@@ -20,7 +20,7 @@ class CommonAfter2Middleware
             SaveLogHelper::save('444', 'ddd');
 
             $response = $handler->handle($request);
-            $response->getBody()->write('->AFTER2');
+//            $response->getBody()->write('->AFTER2');
             return $response;
         };
     }

@@ -20,7 +20,7 @@ class CommonAfterMiddleware
             SaveLogHelper::save('333', 'ccc');
 
             $response = $handler->handle($request);
-            $response->getBody()->write('->AFTER');
+//            $response->getBody()->write('->AFTER');
             return $response;
         };
     }

@@ -16,7 +16,7 @@ class CommonAfter3Middleware
     {
         $this->after3Middleware = function ($request, $handler) {
             $response = $handler->handle($request);
-            $response->getBody()->write('->AFTER3');
+//            $response->getBody()->write('->AFTER3');
             return $response;
         };
     }
