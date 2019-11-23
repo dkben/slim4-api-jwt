@@ -2,7 +2,7 @@
     "name": "dkben/slim4-api-jwt",
     "description": "slim4 + jwt + api",
     "license": "MIT",
-    "version": "1.0.2",
+    "version": "1.0.0",
     "require": {
         "slim/slim": "4.0.0",
         "slim/psr7": "^0.6.0",
