@@ -49,11 +49,19 @@ class ProductsResource extends BaseResource
             // 一定要後端限制
             $page = (isset($_GET['p']) && is_numeric($_GET['p'])) ? $_GET['p'] : 1;
             $limit = (isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit'] < 100) ? $_GET['limit'] : 10;
+            $payment = (isset($_GET['payment']) && is_numeric($_GET['payment'])) ? $_GET['payment'] : null;
             $offset = ($page - 1) * $limit;
 
             $queryBuilder = $this->getEntityManager()->createQueryBuilder()
                 ->select('u')
                 ->from(Product::class, 'u');
+            
+            if (!is_null($payment)) {
+                $queryBuilder->where('u.payment > :payment')->setParameter('payment', $payment);
+            }
+
+            $queryBuilder->orderBy('u.id', 'ASC');
+
             $paginator = new Paginator($queryBuilder);
 
             $totalItems = count($paginator);
@@ -62,6 +70,7 @@ class ProductsResource extends BaseResource
             $paginator->getQuery()
                 ->setFirstResult($offset) // set the offset
                 ->setMaxResults($limit); // set the limit
+
 
             $products = array_map(
                 function($product) {
