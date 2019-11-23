@@ -7,6 +7,7 @@ namespace App\Resource;
 use App\Entity\Product;
 use App\Helper\RedisHelper;
 use App\Helper\SaveLogHelper;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class ProductsResource extends BaseResource
 {
@@ -43,12 +44,31 @@ class ProductsResource extends BaseResource
 //        echo RedisHelper::get('slim4'); die;
 
         if ($id === null) {
-            $products = $this->getEntityManager()->getRepository(Product::class)->findAll();
+            // 取全部，不應該使用
+//            $products = $this->getEntityManager()->getRepository(Product::class)->findAll();
+            // 一定要後端限制
+            $page = (isset($_GET['p']) && is_numeric($_GET['p'])) ? $_GET['p'] : 1;
+            $limit = (isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit'] < 100) ? $_GET['limit'] : 10;
+            $offset = ($page - 1) * $limit;
+
+            $queryBuilder = $this->getEntityManager()->createQueryBuilder()
+                ->select('u')
+                ->from(Product::class, 'u');
+            $paginator = new Paginator($queryBuilder);
+
+            $totalItems = count($paginator);
+            $pagesCount = ceil($totalItems / $limit);  // total page
+
+            $paginator->getQuery()
+                ->setFirstResult($offset) // set the offset
+                ->setMaxResults($limit); // set the limit
+
             $products = array_map(
                 function($product) {
                     return $this->convertToArray($product); },
-                $products
+                iterator_to_array($paginator, true)
             );
+
             $data = $products;
         } else {
             // 使用 ORM 底層方法寫法
