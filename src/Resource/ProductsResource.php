@@ -99,8 +99,8 @@ class ProductsResource extends BaseResource
         /** @var Product $product */
         $product = new Product();
         $product->set($data);
-        $product->setName(isset($data->name) ? $data->name : 'default');
-        $product->setProdDescribe(isset($data->prodDescribe) ? $data->prodDescribe : null);
+//        $product->setName(isset($data->name) ? $data->name : 'default');
+//        $product->setProdDescribe(isset($data->prodDescribe) ? $data->prodDescribe : null);
         $this->getEntityManager()->persist($product);
         $this->getEntityManager()->flush();
 
@@ -114,9 +114,9 @@ class ProductsResource extends BaseResource
         // depends on the concrete implementation
 
         /** @var Product $product */
-        $product = $this->getEntityManager()->find('App\Entity\Product', $id);
+        $product = $this->getEntityManager()->find(Product::class, $id);
         $product->set($data);
-        $product->setName(isset($data->name) ? $data->name : 'default');
+//        $product->setName(isset($data->name) ? $data->name : 'default');
         $this->getEntityManager()->persist($product);
         $this->getEntityManager()->flush();
         return json_encode($this->convertToArray($product));
@@ -129,7 +129,7 @@ class ProductsResource extends BaseResource
         // depends on the concrete implementation
 
         /** @var Product $product */
-        $product = $this->getEntityManager()->find('App\Entity\Product', $id);
+        $product = $this->getEntityManager()->find(Product::class, $id);
         $product->set($data);
         $product->setName(isset($data->name) ? $data->name : 'default');
         $this->getEntityManager()->persist($product);
@@ -140,7 +140,7 @@ class ProductsResource extends BaseResource
     public function delete($id, $data)
     {
         /** @var Product $product */
-        $product = $this->getEntityManager()->find('App\Entity\Product', $id);
+        $product = $this->getEntityManager()->find(Product::class, $id);
 
         $this->getEntityManager()->remove($product);
         $this->getEntityManager()->flush();
