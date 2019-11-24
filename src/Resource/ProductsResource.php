@@ -47,8 +47,8 @@ class ProductsResource extends BaseResource
             // 取全部，不應該使用
 //            $products = $this->getEntityManager()->getRepository(Product::class)->findAll();
             // 一定要後端限制
-            $page = (isset($_GET['p']) && is_numeric($_GET['p'])) ? $_GET['p'] : 1;
-            $limit = (isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit'] < 100) ? $_GET['limit'] : 10;
+            $page = (isset($_GET['p']) && is_numeric($_GET['p'])) ? (int)$_GET['p'] : 1;
+            $limit = (isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit'] < 100) ? (int)$_GET['limit'] : 10;
             $payment = (isset($_GET['payment']) && is_numeric($_GET['payment'])) ? $_GET['payment'] : null;
             $offset = ($page - 1) * $limit;
 
@@ -71,14 +71,23 @@ class ProductsResource extends BaseResource
                 ->setFirstResult($offset) // set the offset
                 ->setMaxResults($limit); // set the limit
 
-
             $products = array_map(
                 function($product) {
                     return $this->convertToArray($product); },
                 iterator_to_array($paginator, true)
             );
 
-            $data = $products;
+            $data = array(
+                'data' => $products,
+                '_embedded' => array(
+                    'totalItems' => $totalItems,
+                    'pagesCount' => $pagesCount,
+                    'currentPage' => $page,
+                    'limit' => $limit,
+                    'offset' => $offset,
+                    'keyword' => 'payment=' . $payment
+                )
+            );
         } else {
             // 使用 ORM 底層方法寫法
             /** @var Product $product */
@@ -87,7 +96,10 @@ class ProductsResource extends BaseResource
             // 使用自訂 Repository 寫法
             /** @var Product $product */
             $product = $this->getEntityManager()->getRepository(Product::class)->getById($id);
-            $data = (is_null($product)) ? '' : $this->convertToArray($product);
+            $data = array(
+                'data' => (is_null($product)) ? '' : $this->convertToArray($product),
+                '_embedded' => ''
+            );
         }
 
         return json_encode($data);
