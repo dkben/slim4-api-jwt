@@ -9,6 +9,14 @@ Accept: application/json
 
 ###
 
+# 取出一頁商品
+GET http://{{host}}//products?p=3&limit=10
+Accept: application/json
+
+###
+
+###
+
 # 取出單一商品
 GET http://{{host}}//products/id/280
 Accept: application/json
