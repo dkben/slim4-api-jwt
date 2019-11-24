@@ -23,7 +23,7 @@ Accept: application/json
 
 > {%
  client.test("Id", function() {
-   client.assert(response.body["id"] === 280, "Returned id not 280")
+   client.assert(response.body.data.id === 280, "Returned id not 280")
  });
 
  client.test("Status", function() {
