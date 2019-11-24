@@ -1,0 +1,66 @@
+http://127.0.0.1:8401/api/v1/
+Acccept: application/json
+
+###
+
+# 根目錄
+http://{{host}}//
+Accept: application/json
+
+###
+
+# 取出單一商品
+GET http://{{host}}//products/id/280
+Accept: application/json
+
+> {%
+ client.test("Id", function() {
+   client.assert(response.body["id"] === 280, "Returned id not 280")
+ });
+
+ client.test("Status", function() {
+    client.assert(response.status === 200, "Response status is not 200")
+ });
+ %}
+
+###
+
+# 會員登入取得 jwt
+POST http://{{host}}//member-login
+Accept: application/json
+Content-Type: raw
+
+{"email": "{{memberEmail}}", "password": "{{memberPassword}}"}
+
+> {%
+ client.global.set("memberToken", response.body["jwt"]);
+ %}
+
+###
+
+# 會員取出會員的個人資料
+GET http://{{host}}//cover/member/id/5
+Accept: application/json
+Authorization: Bearer {{memberToken}}
+
+###
+
+# 管理員登入
+POST http://{{host}}//admin-login
+Accept: application/json
+Content-Type: raw
+
+{"email": "{{adminEmail}}", "password": "{{adminPassword}}"}
+
+> {%
+ client.global.set("adminToken", response.body["jwt"]);
+ %}
+
+###
+
+# 取出管理員資料
+GET http://{{host}}//cover/admin/id/4
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+###

@@ -6,3 +6,4 @@
 /public/upload/
 /private/
 .env
+http-client.private.env.json
