@@ -12,6 +12,7 @@ use App\Action\ResourceAction;
 use App\Action\TestAction;
 use App\Action\UploadImageAction;
 use App\Action\AdminLoginAction;
+use App\Controller\HelloWorldController;
 use App\Middleware\CommonErrorMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -48,12 +49,8 @@ class MyRouter extends BaseRouter
     {
         $self = $this;
 
-        $this->app->get($this->webPrefix . '/', function (Request $request, Response $response, $args) use ($self) {
-            $view = $this->get('view');
-            return $view->render($response, 'frontend/helloworld.html.twig', [
-                'a_variable' => 'test'
-            ]);
-        });
+        // MVC 路由
+        $this->app->get($this->webPrefix . '/', HelloWorldController::class);
 
         // 固定的 uri 用來處理系統排程，非對應到 entity 的狀況
         $this->app->get($this->prefix . '/', function (Request $request, Response $response, $args) use ($self) {

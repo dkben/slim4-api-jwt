@@ -1,6 +1,9 @@
 db:
   driver: pdo_sqlite
   path: /../data/sqlite/db.sqlite
+view:
+  path: ../templates
+  cache: ../data/twig-cache
 slack:
   username: 開發中
   channel: '#xxx'
