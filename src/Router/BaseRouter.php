@@ -9,12 +9,14 @@ use App\Exception\ExceptionResponse;
 use App\Middleware\CommonAfter2Middleware;
 use App\Middleware\CommonAfterMiddleware;
 use App\Middleware\CommonBeforeMiddleware;
+use App\Middleware\TwigMiddleware;
 use App\Service\EmployeeService;
 use DI\Container;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Redis;
 use Slim\Factory\AppFactory;
+use Slim\Views\Twig;
 use Swift_Mailer;
 use Swift_SmtpTransport;
 use Tuupola\Middleware\JwtAuthentication;
@@ -63,6 +65,12 @@ class BaseRouter
                 }
             }
         ]));
+
+        // Add Twig-View Middleware
+        $basePath = '/';
+        $routeParser = $this->app->getRouteCollector()->getRouteParser();
+        $twig = new Twig('../templates', ['cache' => '../data/twig-cache']);
+        $this->app->add(new TwigMiddleware($twig, $container, $routeParser, $basePath));
     }
 
     public function get()

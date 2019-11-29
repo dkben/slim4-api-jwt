@@ -22,11 +22,15 @@ class MyRouter extends BaseRouter
 {
     private $prefix = '';
 
+    private $webPrefix = '';
+
     public function __construct()
     {
         parent::__construct();
 
         $this->prefix = '/api/v1';
+
+        $this->webPrefix = '/web';
 
         // Route 設定
         $this->setRoute();
@@ -43,6 +47,13 @@ class MyRouter extends BaseRouter
     public function setRoute()
     {
         $self = $this;
+
+        $this->app->get($this->webPrefix . '/', function (Request $request, Response $response, $args) use ($self) {
+            $view = $this->get('view');
+            return $view->render($response, 'frontend/helloworld.html.twig', [
+                'a_variable' => 'test'
+            ]);
+        });
 
         // 固定的 uri 用來處理系統排程，非對應到 entity 的狀況
         $this->app->get($this->prefix . '/', function (Request $request, Response $response, $args) use ($self) {
