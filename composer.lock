@@ -4,8 +4,44 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "679c5e71ec5d24c7a3e9d83c175cc1aa",
+    "content-hash": "3a41a9d6d2ad5a6f94b1c1118d6be45a",
     "packages": [
+        {
+            "name": "d11wtq/boris",
+            "version": "v1.0.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/borisrepl/boris.git",
+                "reference": "31055b15e2d3fe47f31f6aa8e277f8f3fc7eb483"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/borisrepl/boris/zipball/31055b15e2d3fe47f31f6aa8e277f8f3fc7eb483",
+                "reference": "31055b15e2d3fe47f31f6aa8e277f8f3fc7eb483",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pcntl": "*",
+                "ext-posix": "*",
+                "ext-readline": "*",
+                "php": ">=5.3.0"
+            },
+            "bin": [
+                "bin/boris"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Boris": "lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A tiny, but robust REPL (Read-Evaluate-Print-Loop) for PHP.",
+            "time": "2015-03-01T08:05:19+00:00"
+        },
         {
             "name": "doctrine/annotations",
             "version": "v1.8.0",
@@ -1923,6 +1959,56 @@
                 "psr-3"
             ],
             "time": "2019-09-06T13:49:17+00:00"
+        },
+        {
+            "name": "mrrio/shellwrap",
+            "version": "0.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/MrRio/shellwrap.git",
+                "reference": "38b4de35379d3056a1374f5f725c2261fea1e16e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/MrRio/shellwrap/zipball/38b4de35379d3056a1374f5f725c2261fea1e16e",
+                "reference": "38b4de35379d3056a1374f5f725c2261fea1e16e",
+                "shasum": ""
+            },
+            "require": {
+                "d11wtq/boris": "1.0.*",
+                "php": ">=5.3.0"
+            },
+            "bin": [
+                "bin/shellwrap"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "MrRio": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "James Hall",
+                    "email": "james@snapshotmedia.co.uk",
+                    "homepage": "http://twitter.com/MrRio",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Use any command-line tool as a PHP function.",
+            "homepage": "http://github.com/MrRio/shellwrap",
+            "keywords": [
+                "api",
+                "command",
+                "command-line",
+                "exec",
+                "shell"
+            ],
+            "time": "2013-12-23T04:05:45+00:00"
         },
         {
             "name": "nikic/fast-route",

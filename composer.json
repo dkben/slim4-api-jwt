@@ -31,7 +31,8 @@
         "doctrine/migrations": "^2.2",
         "jms/serializer": "^1.14",
         "maknz/slack": "^1.7",
-        "slim/twig-view": "^2.5"
+        "slim/twig-view": "^2.5",
+        "mrrio/shellwrap": "^0.4.1"
     },
     "autoload": {
         "psr-4": {
