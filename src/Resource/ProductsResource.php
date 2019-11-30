@@ -50,6 +50,7 @@ class ProductsResource extends BaseResource
             $page = (isset($_GET['p']) && is_numeric($_GET['p'])) ? (int)$_GET['p'] : 1;
             $limit = (isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit'] < 100) ? (int)$_GET['limit'] : 10;
             $payment = (isset($_GET['payment']) && is_numeric($_GET['payment'])) ? $_GET['payment'] : null;
+            $describe = (isset($_GET['describe']) && !empty($_GET['describe'])) ? $_GET['describe'] : null;
             $offset = ($page - 1) * $limit;
 
             $queryBuilder = $this->getEntityManager()->createQueryBuilder()
@@ -58,6 +59,11 @@ class ProductsResource extends BaseResource
             
             if (!is_null($payment)) {
                 $queryBuilder->where('u.payment > :payment')->setParameter('payment', $payment);
+            }
+
+            if (!is_null($describe)) {
+                // (DB Table) prod_describe => (ORM Entity) prodDescribe
+                $queryBuilder->andWhere('u.prodDescribe LIKE :describe')->setParameter('describe', '%' . $describe . '%');
             }
 
             $queryBuilder->orderBy('u.id', 'ASC');
