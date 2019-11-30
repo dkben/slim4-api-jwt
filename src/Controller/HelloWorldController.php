@@ -17,7 +17,7 @@ class HelloWorldController
     {
         $view = $this->container->get('view');
 
-        return $view->render($response, 'frontend/helloworld.html.twig', [
+        return $view->render($response, 'frontend/HelloWorld.html.twig', [
             'a_variable' => 'test'
         ]);
     }

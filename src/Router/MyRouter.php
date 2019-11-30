@@ -29,9 +29,9 @@ class MyRouter extends BaseRouter
     {
         parent::__construct();
 
-        $this->prefix = '/api/v1';
+        $this->prefix = '/api/v1';  // API
 
-        $this->webPrefix = '/web';
+        $this->webPrefix = '/web';  // MVC
 
         // Route 設定
         $this->setRoute();

@@ -69,7 +69,10 @@ class BaseRouter
         // Add Twig-View Middleware
         $basePath = '/';
         $routeParser = $this->app->getRouteCollector()->getRouteParser();
-        $twig = new Twig($this->config['view']['path'], ['cache' => $this->config['view']['cache']]);
+        // 正式環境時使用快取
+//        $twig = new Twig($this->config['view']['path'], ['cache' => $this->config['view']['cache']]);
+        // 開發時禁用快取
+        $twig = new Twig($this->config['view']['path'], ['cache' => false]);
         $this->app->add(new TwigMiddleware($twig, $container, $routeParser, $basePath));
     }
 
