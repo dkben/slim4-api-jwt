@@ -31,10 +31,15 @@ class MakerMvcCommand extends BaseCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $className = $input->getArgument('className');
-        $this->createController($className);
-//        $this->createRepository($className);
-//        $this->createResource($className);
-        $output->writeln("Create empty Entity, Repository, Resource Files");
+
+        if (!empty($className)) {
+            $this->createController($className);
+            $message = 'Success: create Controller Files';
+        } else {
+            $message = 'Error: missing class name';
+        }
+
+        $output->writeln($message);
     }
 
     private function createController($className)

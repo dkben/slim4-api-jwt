@@ -31,10 +31,17 @@ class MakerApiCommand extends BaseCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $className = $input->getArgument('className');
-        $this->createEntity($className);
-//        $this->createRepository($className);
-//        $this->createResource($className);
-        $output->writeln("Create empty Entity, Repository, Resource Files");
+
+        if (!empty($className)) {
+            $this->createEntity($className);
+//            $this->createRepository($className);
+//            $this->createResource($className);
+            $message = 'Success: create empty Entity, Repository, Resource Files';
+        } else {
+            $message = 'Error: missing class name';
+        }
+
+        $output->writeln($message);
     }
 
     private function createEntity($className)
