@@ -5,6 +5,7 @@
  */
 
 use App\Command\DataFixturesCommand;
+use App\Command\MakerCommand;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\Migrations\Configuration\Configuration;
@@ -77,7 +78,9 @@ $cli = ConsoleRunner::createApplication($helperSet, [
     new LatestCommand(),
     new MigrateCommand(),
     new StatusCommand(),
-    new VersionCommand()
+    new VersionCommand(),
+    // Maker Commands
+    new MakerCommand()
 ]);
 
 return $cli->run();
