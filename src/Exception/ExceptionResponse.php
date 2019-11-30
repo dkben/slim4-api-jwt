@@ -9,9 +9,6 @@ class ExceptionResponse
     static public function response($message, $code)
     {
         $response = array('message' => $message, 'code' => $code);
-//        echo "Message: " . $message;
-//        echo "<br />";
-//        echo "Code: " . $code;
         echo json_encode($response);
         header('Content-Type: application/json');
         http_response_code(400);

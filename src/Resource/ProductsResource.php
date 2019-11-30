@@ -7,7 +7,6 @@ namespace App\Resource;
 use App\Entity\Product;
 use App\Helper\RedisHelper;
 use App\Helper\SaveLogHelper;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class ProductsResource extends BaseResource
 {
@@ -31,6 +30,7 @@ class ProductsResource extends BaseResource
     }
 
     /**
+     * API 的 GET 會有各種條件且會影響到分頁，每個 Resource Class 都會不同，所以個別實作會比較方便
      * @param $id
      *
      * @return string
@@ -46,40 +46,39 @@ class ProductsResource extends BaseResource
         if ($id === null) {
             // 取全部，不應該使用
 //            $products = $this->getEntityManager()->getRepository(Product::class)->findAll();
+
             // 一定要後端限制
             $page = (isset($_GET['p']) && is_numeric($_GET['p'])) ? (int)$_GET['p'] : 1;
             $limit = (isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit'] < 100) ? (int)$_GET['limit'] : 10;
-            $payment = (isset($_GET['payment']) && is_numeric($_GET['payment'])) ? $_GET['payment'] : null;
-            $describe = (isset($_GET['describe']) && !empty($_GET['describe'])) ? $_GET['describe'] : null;
             $offset = ($page - 1) * $limit;
 
             $queryBuilder = $this->getEntityManager()->createQueryBuilder()
                 ->select('u')
                 ->from(Product::class, 'u');
-            
+
+            // key word 條件 1
+            $payment = (isset($_GET['payment']) && is_numeric($_GET['payment'])) ? $_GET['payment'] : null;
             if (!is_null($payment)) {
                 $queryBuilder->where('u.payment > :payment')->setParameter('payment', $payment);
             }
 
+            // key word 條件 2
+            $describe = (isset($_GET['describe']) && !empty($_GET['describe'])) ? $_GET['describe'] : null;
             if (!is_null($describe)) {
                 // (DB Table) prod_describe => (ORM Entity) prodDescribe
                 $queryBuilder->andWhere('u.prodDescribe LIKE :describe')->setParameter('describe', '%' . $describe . '%');
             }
 
+            // 排序依據
             $queryBuilder->orderBy('u.id', 'ASC');
 
-            $paginator = new Paginator($queryBuilder);
-
-            $totalItems = count($paginator);
+            // 分頁
+            $paginator = $this->createPaginator($queryBuilder, $limit, $offset);
+            $totalItems = count($paginator);  // total
             $pagesCount = ceil($totalItems / $limit);  // total page
 
-            $paginator->getQuery()
-                ->setFirstResult($offset) // set the offset
-                ->setMaxResults($limit); // set the limit
-
             $products = array_map(
-                function($product) {
-                    return $this->convertToArray($product); },
+                function($product) { return $this->convertToArray($product); },
                 iterator_to_array($paginator, true)
             );
 
@@ -101,7 +100,8 @@ class ProductsResource extends BaseResource
 
             // 使用自訂 Repository 寫法
             /** @var Product $product */
-            $product = $this->getEntityManager()->getRepository(Product::class)->getById($id);
+//            $product = $this->getEntityManager()->getRepository(Product::class)->getById($id);
+            $product = $this->getEntity(Product::class, $id);
             $data = array(
                 'data' => (is_null($product)) ? '' : $this->convertToArray($product),
                 '_embedded' => ''

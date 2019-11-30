@@ -5,7 +5,9 @@ namespace App\Resource;
 
 
 use App\Exception\ApiAccessDeniedException;
+use App\Exception\DbDataNotFoundException;
 use App\Exception\ExceptionResponse;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 abstract class BaseResource
 {
@@ -100,6 +102,23 @@ abstract class BaseResource
         }
     }
 
+    /**
+     * 建立分頁物件
+     * @param $queryBuilder
+     * @param $limit
+     * @param $offset
+     * @return Paginator
+     */
+    protected function createPaginator($queryBuilder, $limit, $offset)
+    {
+        $paginator = new Paginator($queryBuilder);
+        $paginator->getQuery()
+            ->setFirstResult($offset) // set the offset
+            ->setMaxResults($limit); // set the limit
+
+        return $paginator;
+    }
+
     protected function resourcePost($entityClass, $data)
     {
         $entity = new $entityClass();
@@ -118,7 +137,7 @@ abstract class BaseResource
         // return valid status code or throw an exception
         // depends on the concrete implementation
 
-        $entity = $this->getEntityManager()->find($entityClass, $id);
+        $entity = $this->getEntity($entityClass, $id);
         $entity->set($data);
 //        $product->setName(isset($data->name) ? $data->name : 'default');
         $this->getEntityManager()->persist($entity);
@@ -132,7 +151,7 @@ abstract class BaseResource
         // return valid status code or throw an exception
         // depends on the concrete implementation
 
-        $entity = $this->getEntityManager()->find($entityClass, $id);
+        $entity = $this->getEntity($entityClass, $id);
         $entity->set($data);
         $entity->setName(isset($data->name) ? $data->name : 'default');
         $this->getEntityManager()->persist($entity);
@@ -142,9 +161,34 @@ abstract class BaseResource
 
     public function resourceDelete($entityClass, $id)
     {
-        $entity = $this->getEntityManager()->find($entityClass, $id);
+        $entity = $this->getEntity($entityClass, $id);
         $this->getEntityManager()->remove($entity);
         $this->getEntityManager()->flush();
+        return $entity;
+    }
+
+    /**
+     * 嘗試取得一筆 Entity 資訊，如果沒有資料返回自訂 Exception
+     * @param $entityClass
+     * @param $id
+     * @return object|null
+     * @throws DbDataNotFoundException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    protected function getEntity($entityClass, $id)
+    {
+        $entity = $this->getEntityManager()->find($entityClass, $id);
+
+        try {
+            if (!$entity) {
+                throw new DbDataNotFoundException('Db Data Not Found', 204);
+            }
+        } catch (DbDataNotFoundException $e) {
+            ExceptionResponse::response($e->getMessage(), $e->getCode());
+        }
+
         return $entity;
     }
 }

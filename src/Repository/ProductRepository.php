@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityRepository;
 
 class ProductRepository extends EntityRepository
 {
-    public function getById($id): Product
+    public function getById($id): ?Product
     {
         $queryBuilder = $this->createQueryBuilder('a');
 
@@ -16,7 +16,7 @@ class ProductRepository extends EntityRepository
             ->where('a.id = :id')
             ->setParameter(':id', $id);
         ;
-
-        return $queryBuilder->getQuery()->getSingleResult();
+//        return $queryBuilder->getQuery()->getSingleResult();
+        return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 }
