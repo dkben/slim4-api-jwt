@@ -31,6 +31,16 @@ abstract class BaseResource
         $this->args = $args;
     }
 
+    protected function get($id) {}
+
+    protected function post($data) {}
+
+    protected function put($id, $data) {}
+
+    protected function patch($id, $data) {}
+
+    protected function delete($id) {}
+
     /**
      * @return \Doctrine\ORM\EntityManager
      */
@@ -90,4 +100,51 @@ abstract class BaseResource
         }
     }
 
+    protected function resourcePost($entityClass, $data)
+    {
+        $entity = new $entityClass();
+        $entity->set($data);
+//        $product->setName(isset($data->name) ? $data->name : 'default');
+//        $product->setProdDescribe(isset($data->prodDescribe) ? $data->prodDescribe : null);
+        $this->getEntityManager()->persist($entity);
+        $this->getEntityManager()->flush();
+
+        return $entity;
+    }
+
+    protected function resourcePut($entityClass, $id, $data)
+    {
+        // handle if $id is missing or $name or $email are valid etc.
+        // return valid status code or throw an exception
+        // depends on the concrete implementation
+
+        $entity = $this->getEntityManager()->find($entityClass, $id);
+        $entity->set($data);
+//        $product->setName(isset($data->name) ? $data->name : 'default');
+        $this->getEntityManager()->persist($entity);
+        $this->getEntityManager()->flush();
+        return $entity;
+    }
+
+    public function resourcePatch($entityClass, $id, $data)
+    {
+        // handle if $id is missing or $name or $email are valid etc.
+        // return valid status code or throw an exception
+        // depends on the concrete implementation
+
+        $entity = $this->getEntityManager()->find($entityClass, $id);
+        $entity->set($data);
+        $entity->setName(isset($data->name) ? $data->name : 'default');
+        $this->getEntityManager()->persist($entity);
+        $this->getEntityManager()->flush();
+        return $entity;
+    }
+
+    public function resourceDelete($entityClass, $id)
+    {
+        $entity = $this->getEntityManager()->find($entityClass, $id);
+        $this->getEntityManager()->remove($entity);
+        $this->getEntityManager()->flush();
+        return $entity;
+    }
 }

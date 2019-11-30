@@ -19,12 +19,12 @@ class ProductsResource extends BaseResource
 
         $this->appendAuth("POST", 'member');
         $this->appendAuth("PUT", 'member');
-        $this->appendAuth("PATCH", 'member');
+//        $this->appendAuth("PATCH", 'member');
         $this->appendAuth("DELETE", 'member');
 
         $this->appendAuth("POST", 'admin');
         $this->appendAuth("PUT", 'admin');
-        $this->appendAuth("PATCH", 'admin');
+//        $this->appendAuth("PATCH", 'admin');
         $this->appendAuth("DELETE", 'admin');
 
         $this->checkRolePermission($request);
@@ -111,60 +111,39 @@ class ProductsResource extends BaseResource
         return json_encode($data);
     }
 
-    // POST, PUT, DELETE methods...
     public function post($data)
     {
         /** @var Product $product */
-        $product = new Product();
-        $product->set($data);
-//        $product->setName(isset($data->name) ? $data->name : 'default');
-//        $product->setProdDescribe(isset($data->prodDescribe) ? $data->prodDescribe : null);
-        $this->getEntityManager()->persist($product);
-        $this->getEntityManager()->flush();
-
+        $product = $this->resourcePost(Product::class, $data);
         return json_encode($this->convertToArray($product));
     }
 
     public function put($id, $data)
     {
-        // handle if $id is missing or $name or $email are valid etc.
-        // return valid status code or throw an exception
-        // depends on the concrete implementation
-
         /** @var Product $product */
-        $product = $this->getEntityManager()->find(Product::class, $id);
-        $product->set($data);
-//        $product->setName(isset($data->name) ? $data->name : 'default');
-        $this->getEntityManager()->persist($product);
-        $this->getEntityManager()->flush();
+        $product = $this->resourcePut(Product::class, $id, $data);
         return json_encode($this->convertToArray($product));
     }
 
     public function patch($id, $data)
     {
-        // handle if $id is missing or $name or $email are valid etc.
-        // return valid status code or throw an exception
-        // depends on the concrete implementation
-
         /** @var Product $product */
-        $product = $this->getEntityManager()->find(Product::class, $id);
-        $product->set($data);
-        $product->setName(isset($data->name) ? $data->name : 'default');
-        $this->getEntityManager()->persist($product);
-        $this->getEntityManager()->flush();
+        $product = $this->resourcePatch(Product::class, $id, $data);
         return json_encode($this->convertToArray($product));
     }
 
-    public function delete($id, $data)
+    public function delete($id)
     {
         /** @var Product $product */
-        $product = $this->getEntityManager()->find(Product::class, $id);
-
-        $this->getEntityManager()->remove($product);
-        $this->getEntityManager()->flush();
+        $product = $this->resourceDelete(Product::class, $id);
         return json_encode($this->convertToArray($product));
     }
 
+    /**
+     * 要針對每一個 Class 客置化，因為欄位方法都不一樣
+     * @param Product $product
+     * @return array
+     */
     private function convertToArray(Product $product)
     {
         return array(

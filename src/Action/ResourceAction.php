@@ -112,8 +112,7 @@ class ResourceAction extends BaseAction
         $resource = $this->create($request, $response, $args);
 
         $id = isset($args['id']) ? $args['id'] : null;
-        $data = json_decode($request->getBody()->getContents());
-        $response->getBody()->write($resource->delete($id, $data));
+        $response->getBody()->write($resource->delete($id));
         return BaseRouter::staticResponse($response, 200);
     }
 }
