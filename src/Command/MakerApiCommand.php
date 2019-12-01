@@ -33,10 +33,27 @@ class MakerApiCommand extends BaseCommand
         $className = $input->getArgument('className');
 
         if (!empty($className)) {
-            $this->createEntity($className);
-//            $this->createRepository($className);
-//            $this->createResource($className);
-            $message = 'Success: create empty Entity, Repository, Resource Files';
+            $entityResult = $this->createEntity($className);
+            $repositoryResult = $this->createRepository($className);
+            $resourceResult = $this->createResource($className);
+
+            if ($entityResult) {
+                $message = 'Success: create empty Entity file.' . PHP_EOL;
+            } else {
+                $message = 'Error: Entity file is exists!' . PHP_EOL;
+            }
+
+            if ($repositoryResult) {
+                $message .= 'Success: create empty Repository file.' . PHP_EOL;
+            } else {
+                $message .= 'Error: Repository file is exists!' . PHP_EOL;
+            }
+
+            if ($resourceResult) {
+                $message .= 'Success: create empty Resource file.';
+            } else {
+                $message .= 'Error: Resource file is exists!';
+            }
         } else {
             $message = 'Error: missing class name';
         }
@@ -48,6 +65,11 @@ class MakerApiCommand extends BaseCommand
     {
         // Touch a file to create it
         $file = 'src/Entity/' . $className . 'Entity.php';
+
+        if (file_exists($file)) {
+            return false;
+        }
+
         sh::touch($file);
 
         sh::echo('"<?php
@@ -90,12 +112,19 @@ class ' . $className . ' extends BaseEntity
     protected \$number;
 }
         " >> ' . $file);
+
+        return true;
     }
 
     private function createRepository($className)
     {
         // Touch a file to create it
         $file = 'src/Repository/' . $className . 'Repository.php';
+
+        if (file_exists($file)) {
+            return false;
+        }
+
         sh::touch($file);
 
         sh::echo('"<?php" >> ' . $file);
@@ -106,12 +135,19 @@ class ' . $className . ' extends BaseEntity
         line 5
              line 6
         " >> ' . $file);
+
+        return true;
     }
 
     private function createResource($className)
     {
         // Touch a file to create it
         $file = 'src/Resource/' . $className . 'Resource.php';
+
+        if (file_exists($file)) {
+            return false;
+        }
+
         sh::touch($file);
 
         sh::echo('"<?php" >> ' . $file);
@@ -122,6 +158,8 @@ class ' . $className . ' extends BaseEntity
         line 5
              line 6
         " >> ' . $file);
+
+        return true;
     }
 
 }

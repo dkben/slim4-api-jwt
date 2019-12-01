@@ -33,10 +33,15 @@ class MakerMvcCommand extends BaseCommand
         $className = $input->getArgument('className');
 
         if (!empty($className)) {
-            $this->createController($className);
-            $message = 'Success: create Controller Files';
+            $controllerResult = $this->createController($className);
+
+            if ($controllerResult) {
+                $message = 'Success: create empty Controller file.';
+            } else {
+                $message = 'Error: Controller file is exists!';
+            }
         } else {
-            $message = 'Error: missing class name';
+            $message = 'Error: missing class name!';
         }
 
         $output->writeln($message);
@@ -46,6 +51,11 @@ class MakerMvcCommand extends BaseCommand
     {
         // Touch a file to create it
         $file = 'src/Controller/' . $className . 'Controller.php';
+
+        if (file_exists($file)) {
+            return false;
+        }
+
         sh::touch($file);
 
         sh::echo('"<?php
@@ -75,6 +85,8 @@ class ' . $className . 'Controller
     }
 }
         " >> ' . $file);
+
+        return true;
     }
 
 }
