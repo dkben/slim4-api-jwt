@@ -86,31 +86,31 @@ use Webmozart\Assert\Assert;
 
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\\' . $className . 'Repository")
- * @ORM\Table(name="' . $this->toUnderScore($className) . '")
+ * @ORM\Entity(repositoryClass=\"App\Repository\\' . $className . 'Repository\")
+ * @ORM\Table(name=\"' . $this->toUnderScore($className) . '\")
  * @HasLifecycleCallbacks
  */
 class ' . $className . ' extends BaseEntity
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type=\"integer\")
      * @ORM\GeneratedValue
      */
     protected \$id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type=\"string\")
      */
     protected \$name;
 
     /**
-     * @ORM\Column(type="string", name="prod_describe", nullable=true)
+     * @ORM\Column(type=\"string\", name=\"prod_describe\", nullable=true)
      */
     protected \$prodDescribe;
 
     /**
-     * @ORM\Column(type="integer", name="payment", nullable=true)
+     * @ORM\Column(type=\"integer\", name=\"payment\", nullable=true)
      */
     protected \$payment;
     
