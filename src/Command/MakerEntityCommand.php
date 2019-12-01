@@ -162,8 +162,8 @@ class ' . $className . ' extends BaseEntity
     {
         // 參考 https://github.com/webmozart/assert
         try {
-            Assert::stringNotEmpty(\$this->prodDescribe, json_encode(array("prodDescribe" => "請輸入商品描述")));
-            Assert::integer(\$this->payment, json_encode(array("payment" => "請輸入整數值")));
+            Assert::stringNotEmpty(\$this->prodDescribe, json_encode(array(\"prodDescribe\" => \"請輸入商品描述\")));
+            Assert::integer(\$this->payment, json_encode(array(\"payment\" => \"請輸入整數值\")));
         } catch (InvalidArgumentException \$e) {
             ExceptionResponse::response(\$e->getMessage(), 400);
         }
