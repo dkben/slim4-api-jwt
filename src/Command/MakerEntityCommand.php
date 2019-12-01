@@ -165,7 +165,29 @@ class '. $className .'Repository extends EntityRepository
 
         sh::touch($file);
 
-        sh::echo('"
+        sh::echo('"<?php
+
+
+namespace App\DataFixtures;
+
+
+use App\Entity\\'. $className .';
+use Doctrine\Common\Persistence\ObjectManager;
+
+
+class '. $className .'Fixtures extends BaseFixture
+{
+    protected function loadData(ObjectManager \$manager)
+    {
+        \$this->createMany('. $className .'::class, 500, function ('. $className .' \$' . lcfirst($className) . ', \$count) {
+            \$' . lcfirst($className) . '->setName(\$this->faker->userName);
+            \$' . lcfirst($className) . '->setProdDescribe(\$this->faker->text());
+            \$' . lcfirst($className) . '->setPayment(\$this->faker->numberBetween(100, 999));
+        });
+
+        \$manager->flush();
+    }
+}
         " >> ' . $file);
 
         return true;
