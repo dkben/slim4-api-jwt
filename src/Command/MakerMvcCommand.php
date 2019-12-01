@@ -65,8 +65,10 @@ class ' . $className . 'Controller
 
     public function __invoke(\$request, \$response, \$args)
     {
+        // 取得 di-container 裡的 view
         \$view = \$this->container->get(\'view\');
 
+        // render template
         return \$view->render(\$response, \'frontend/HelloWorld.html.twig\', [
             \'a_variable\' => \'test\'
         ]);
