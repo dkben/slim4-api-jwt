@@ -6,6 +6,7 @@
 
 use App\Command\DataFixturesCommand;
 use App\Command\MakerApiCommand;
+use App\Command\MakerEntityCommand;
 use App\Command\MakerMvcCommand;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
@@ -83,6 +84,7 @@ $cli = ConsoleRunner::createApplication($helperSet, [
     // Maker Commands
     new MakerApiCommand(),
     new MakerMvcCommand(),
+    new MakerEntityCommand(),
 ]);
 
 return $cli->run();
