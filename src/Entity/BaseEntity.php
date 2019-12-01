@@ -47,18 +47,19 @@ class BaseEntity
     }
 
     /**
+     * 棄用，改用 Webmozart Assert 做驗證
      * 是否需要拋出異常
      * @param $result boolean
      */
-    protected function entityValidate($result)
-    {
-        try {
-            if ($result) {
-                throw new EntityValidateException();
-            }
-        } catch (EntityValidateException $e) {
-            ExceptionResponse::response($e->getMessage(), $e->getCode());
-        }
-    }
+//    protected function entityValidate($result)
+//    {
+//        try {
+//            if ($result) {
+//                throw new EntityValidateException();
+//            }
+//        } catch (EntityValidateException $e) {
+//            ExceptionResponse::response($e->getMessage(), $e->getCode());
+//        }
+//    }
 
 }

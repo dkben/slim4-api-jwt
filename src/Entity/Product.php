@@ -2,10 +2,13 @@
 
 namespace App\Entity;
 
+use App\Exception\ExceptionResponse;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\PrePersist;
 use Doctrine\ORM\Mapping\PreUpdate;
+use InvalidArgumentException;
+use Webmozart\Assert\Assert;
 
 
 /**
@@ -83,9 +86,18 @@ class Product extends BaseEntity
      */
     public function validate()
     {
-        $this->entityValidate(
-            is_null($this->payment) || !isset($this->payment) || !is_int($this->payment)
-        );
+        // 參考 https://github.com/webmozart/assert
+        try {
+            Assert::stringNotEmpty($this->prodDescribe, "prodDescribe: 請輸入商品描述");
+            Assert::integer($this->payment, "payment: 請輸入整數值");
+        } catch (InvalidArgumentException $e) {
+            ExceptionResponse::response($e->getMessage(), 400);
+        }
+
+        // 棄用，改用 Webmozart Assert 做驗證
+//        $this->entityValidate(
+//            is_null($this->payment) || !isset($this->payment) || !is_int($this->payment)
+//        );
     }
 
 }
