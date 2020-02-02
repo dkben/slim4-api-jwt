@@ -46,6 +46,7 @@ class AdminResource extends BaseResource
                 $admin);
             $data = $admin;
         } else {
+            /** @var Admin $admin */
             $admin = $this->getEntityManager()->find('\App\Entity\Admin', $id);
             $data = (is_null($admin)) ? '' : $this->convertToArray($admin);
         }
