@@ -96,6 +96,7 @@ class AdminResource extends BaseResource
 
     public function delete($id)
     {
+        /** @var Admin $admin */
         $admin = $this->getEntityManager()->find('App\Entity\Admin', $id);
 
         $this->getEntityManager()->remove($admin);
