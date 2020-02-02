@@ -94,7 +94,7 @@ class AdminResource extends BaseResource
         return json_encode($this->convertToArray($admin));
     }
 
-    public function delete($id, $data)
+    public function delete($id)
     {
         $admin = $this->getEntityManager()->find('App\Entity\Admin', $id);
 
