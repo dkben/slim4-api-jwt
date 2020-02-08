@@ -33,7 +33,8 @@
         "maknz/slack": "^1.7",
         "slim/twig-view": "^2.5",
         "mrrio/shellwrap": "^0.4.1",
-        "webmozart/assert": "^1.6"
+        "webmozart/assert": "^1.6",
+        "zircote/swagger-php": "^3.0"
     },
     "autoload": {
         "psr-4": {

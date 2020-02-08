@@ -7,8 +7,11 @@ namespace App\Resource;
 use App\Entity\Admin;
 use App\Helper\RedisHelper;
 use App\Helper\SaveLogHelper;
+use OpenApi\Annotations as OA;
 
-
+/**
+ * @OA\Info(title="AdminResource", version="1.0.0")
+ */
 class AdminResource extends BaseResource
 {
     public function __construct($request, $response, $args)
@@ -27,9 +30,31 @@ class AdminResource extends BaseResource
     }
 
     /**
-     * @param $id
-     *
-     * @return string
+     * @OA\Get(
+     *     path="/hello",
+     *     tags={"XXAPI"},
+     *     summary="取得Admin資訊",
+     *     description="取得Admin資訊",
+     *     operationId="取得Admin資訊",
+     *     deprecated=false,
+     *     @OA\Parameter(
+     *         name="access_token",
+     *         in="query",
+     *         description="用戶授權",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="操作成功返回"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="發生錯誤"
+     *     )
+     * )
      */
     public function get($id)
     {
@@ -56,7 +81,6 @@ class AdminResource extends BaseResource
         return json_encode($data);
     }
 
-    // POST, PUT, DELETE methods...
     public function post($data)
     {
         /** @var Admin $admin */
