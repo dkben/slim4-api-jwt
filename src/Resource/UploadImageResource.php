@@ -26,7 +26,7 @@ class UploadImageResource extends BaseResource
         $this->checkRolePermission($request);
     }
 
-    public function post()
+    public function post($data = null)
     {
         $message = (new UploadImageHelper('public'))->upload();
         $this->response->getBody()->write("Upload Image: " . $message . "!");

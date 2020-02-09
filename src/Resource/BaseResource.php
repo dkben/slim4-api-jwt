@@ -35,7 +35,7 @@ abstract class BaseResource
 
     protected function get($id) {}
 
-    protected function post($data) {}
+    protected function post($data = null) {}
 
     protected function put($id, $data) {}
 
