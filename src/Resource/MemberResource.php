@@ -103,7 +103,7 @@ class MemberResource extends BaseResource
         return json_encode($this->convertToArray($member));
     }
 
-    public function delete($id, $data)
+    public function delete($id)
     {
         $member = $this->getEntityManager()->find('App\Entity\Member', $id);
 
